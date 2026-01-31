@@ -7,4 +7,4 @@ npm-debug.log
 
 # Build
 dist/
-build/
+build/public/
