@@ -1,0 +1,393 @@
+.marketplace-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.marketplace-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.header-content h1 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+}
+
+.header-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.marketplace-filters {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.category-filter {
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  min-width: 180px;
+  transition: border-color 0.3s;
+}
+
+.category-filter:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.sellers-grid {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.seller-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.seller-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.seller-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.seller-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #667eea;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.seller-info {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.seller-info h3 {
+  font-size: 1.4rem;
+  margin: 0 0 8px 0;
+  color: #1a202c;
+}
+
+.seller-owner {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 5px 0;
+}
+
+.seller-phone {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 8px 0;
+}
+
+.seller-status {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.verified {
+  display: inline-block;
+  background: #d4edda;
+  color: #155724;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pending {
+  display: inline-block;
+  background: #fff3cd;
+  color: #856404;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.view-shop-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.view-shop-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.loading,
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+@media (max-width: 1024px) {
+  .marketplace-filters {
+    max-width: 1100px;
+    margin: 25px auto;
+    padding: 0 15px;
+    gap: 12px;
+  }
+
+  .search-input {
+    min-width: 200px;
+    padding: 11px 14px;
+    font-size: 0.95rem;
+  }
+
+  .category-filter {
+    padding: 11px 14px;
+    font-size: 0.95rem;
+    min-width: 160px;
+  }
+
+  .sellers-grid {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 0 15px 35px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .marketplace-container {
+    background: #f8f9fa;
+  }
+
+  .marketplace-header {
+    padding: 40px 15px;
+  }
+
+  .header-content h1 {
+    font-size: 1.7rem;
+    margin-bottom: 8px;
+  }
+
+  .header-content p {
+    font-size: 0.95rem;
+  }
+
+  .marketplace-filters {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 0 12px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-input {
+    width: 100%;
+    min-width: auto;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+
+  .category-filter {
+    width: 100%;
+    min-width: auto;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .sellers-grid {
+    max-width: 100%;
+    margin: 25px auto;
+    padding: 0 12px 25px;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .seller-card {
+    border-radius: 10px;
+  }
+
+  .seller-badge {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .seller-info h3 {
+    font-size: 1rem;
+  }
+
+  .seller-owner {
+    font-size: 0.85rem;
+  }
+
+  .seller-phone {
+    font-size: 0.85rem;
+  }
+
+  .seller-status {
+    font-size: 0.85rem;
+  }
+
+  .verified,
+  .pending {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+
+  .view-shop-btn {
+    padding: 11px 16px;
+    font-size: 0.95rem;
+  }
+
+  .loading,
+  .empty-state {
+    padding: 50px 15px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .marketplace-header {
+    padding: 30px 12px;
+  }
+
+  .header-content h1 {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+  }
+
+  .header-content p {
+    font-size: 0.85rem;
+  }
+
+  .marketplace-filters {
+    max-width: 100%;
+    margin: 15px auto;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .search-input {
+    padding: 9px 10px;
+    font-size: 0.85rem;
+  }
+
+  .category-filter {
+    padding: 9px 10px;
+    font-size: 0.85rem;
+  }
+
+  .sellers-grid {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 0 10px 20px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .seller-card {
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  .seller-info {
+    padding: 10px;
+  }
+
+  .seller-badge {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    top: 8px;
+    right: 8px;
+  }
+
+  .seller-info h3 {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  .seller-owner {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+
+  .seller-phone {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .seller-status {
+    margin-bottom: 10px;
+  }
+
+  .verified,
+  .pending {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+
+  .view-shop-btn {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .loading,
+  .empty-state {
+    padding: 40px 12px;
+    font-size: 0.9rem;
+  }
+}
