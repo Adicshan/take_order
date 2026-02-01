@@ -1,24 +1,30 @@
 .marketplace-container {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: var(--almost-white);
+  font-family: 'Lora', 'Inter', serif, sans-serif;
 }
 
 .marketplace-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%);
   color: white;
-  padding: 60px 20px;
+  padding: 70px 20px;
   text-align: center;
 }
 
 .header-content h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   margin: 0 0 10px 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .header-content p {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.95;
   margin: 0;
+  font-family: 'Lora', serif;
+  line-height: 1.6;
 }
 
 .marketplace-filters {
@@ -34,15 +40,19 @@
   flex: 1;
   min-width: 250px;
   padding: 12px 15px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
+  border: 2px solid var(--almost-white);
+  border-radius: 4px;
   font-size: 1rem;
-  transition: border-color 0.3s;
+  transition: all 0.3s ease;
+  background: var(--pure-white);
+  color: var(--primary-black);
+  font-family: 'Lora', serif;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--secondary-black);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.05);
 }
 
 .category-filter {

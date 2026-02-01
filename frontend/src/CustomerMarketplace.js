@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './CustomerMarketplace.css';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from './config';
 
 const CustomerMarketplace = () => {
   const [sellers, setSellers] = useState([]);

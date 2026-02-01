@@ -1,12 +1,25 @@
 .storefront-container {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: var(--almost-white);
+  font-family: 'Lora', 'Inter', serif, sans-serif;
 }
 
 .storefront-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%);
+  color: var(--pure-white);
   padding: 50px 20px;
+  animation: slideDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header-content {
@@ -17,6 +30,9 @@
 .header-content h1 {
   font-size: 2.5rem;
   margin: 0 0 15px 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .seller-meta {
@@ -27,29 +43,38 @@
 }
 
 .business-type {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .seller-owner {
-  opacity: 0.9;
+  opacity: 0.95;
   font-size: 0.95rem;
+  font-family: 'Lora', serif;
 }
 
 .verified-badge {
-  background: #4ade80;
+  background: var(--dark-grey);
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 0.9rem;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+  border: 1px solid var(--medium-grey);
 }
 
 .seller-description {
   font-size: 1.1rem;
   opacity: 0.95;
   margin: 0 0 20px 0;
+  font-family: 'Lora', serif;
+  line-height: 1.6;
 }
 
 .contact-info {
@@ -60,6 +85,7 @@
 .contact-info p {
   margin: 0;
   font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .storefront-controls {
@@ -74,31 +100,39 @@
 }
 
 .back-link {
-  color: #667eea;
+  color: var(--primary-black);
   text-decoration: none;
   font-weight: 600;
   padding: 10px 15px;
-  border-radius: 6px;
-  transition: all 0.3s;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .back-link:hover {
-  background: #f0f0f0;
+  background: var(--very-light-grey);
+  color: var(--secondary-black);
+  transform: translateX(-4px);
 }
 
 .category-filter {
   padding: 10px 15px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
+  border: 2px solid var(--very-light-grey);
+  border-radius: 4px;
   font-size: 0.95rem;
-  background: white;
+  background: var(--pure-white);
   cursor: pointer;
-  transition: border-color 0.3s;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+  color: var(--primary-black);
 }
 
 .category-filter:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary-black);
 }
 
 .products-grid {
@@ -116,25 +150,27 @@
 }
 
 .product-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--pure-white);
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   display: flex;
   flex-direction: column;
   height: 100%;
+  border: 2px solid transparent;
 }
 
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  border-color: var(--dark-grey);
 }
 
 .product-image {
   width: 100%;
   height: 200px;
-  background: #f0f0f0;
+  background: var(--almost-white);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -157,11 +193,13 @@
 .product-info h3 {
   font-size: 1.1rem;
   margin: 0 0 8px 0;
-  color: #1a202c;
+  color: var(--primary-black);
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
 }
 
 .description {
-  color: #666;
+  color: var(--light-grey);
   font-size: 0.9rem;
   margin: 0 0 12px 0;
   flex: 1;
@@ -175,21 +213,24 @@
 }
 
 .category {
-  background: #e3f2fd;
-  color: #1976d2;
+  background: var(--almost-white);
+  color: var(--primary-black);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 0.8rem;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--very-light-grey);
 }
 
 .stock {
-  background: #f3e5f5;
-  color: #7b1fa2;
+  background: var(--dark-grey);
+  color: var(--pure-white);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 0.8rem;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
 }
 
 .product-footer {
@@ -202,25 +243,29 @@
 .price {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--primary-black);
+  font-family: 'Inter', sans-serif;
 }
 
 .buy-btn {
   flex: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+  background: var(--primary-black);
+  color: var(--pure-white);
+  border: 2px solid var(--primary-black);
   padding: 10px 15px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
 }
 
 .buy-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: var(--secondary-black);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(10, 10, 10, 0.3);
 }
 
 .empty-state,
@@ -229,18 +274,26 @@
   text-align: center;
   padding: 60px 20px;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--light-grey);
+  font-family: 'Lora', serif;
 }
 
 .error-container a {
   display: inline-block;
   margin-top: 20px;
-  background: #667eea;
-  color: white;
+  background: var(--primary-black);
+  color: var(--pure-white);
   padding: 10px 20px;
-  border-radius: 6px;
+  border-radius: 4px;
   text-decoration: none;
   font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+}
+
+.error-container a:hover {
+  background: var(--secondary-black);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.3);
 }
 
 @media (max-width: 1024px) {

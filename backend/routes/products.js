@@ -104,6 +104,37 @@ router.get('/seller-products', verifySeller, async (req, res) => {
   }
 });
 
+// Get all products (public route for customers) - MUST BE BEFORE /:id
+router.get('/all', async (req, res) => {
+  try {
+    const products = await Product.find({ status: 'active' })
+      .populate('sellerId', 'storeName businessType phone address isVerified')
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json({ products });
+  } catch (error) {
+    console.error('Error fetching all products:', error);
+    res.status(500).json({ message: 'Error fetching products', error: error.message });
+  }
+});
+
+// Get products by seller (public route for customers)
+router.get('/by-seller/:sellerId', async (req, res) => {
+  try {
+    const products = await Product.find({ 
+      sellerId: req.params.sellerId,
+      status: 'active'
+    })
+      .populate('sellerId', 'storeName businessType phone address isVerified')
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json({ products });
+  } catch (error) {
+    console.error('Error fetching seller products:', error);
+    res.status(500).json({ message: 'Error fetching products', error: error.message });
+  }
+});
+
 // Get single product
 router.get('/:id', async (req, res) => {
   try {
@@ -158,44 +189,6 @@ router.delete('/delete/:id', verifySeller, async (req, res) => {
   } catch (error) {
     console.error('Error deleting product:', error);
     res.status(500).json({ message: 'Error deleting product', error: error.message });
-  }
-});
-// Get all products (public route for customers)
-router.get('/all', async (req, res) => {
-  try {
-    const products = await Product.find({ status: 'active' }).sort({ createdAt: -1 });
-    res.status(200).json({ products });
-  } catch (error) {
-    console.error('Error fetching all products:', error);
-    res.status(500).json({ message: 'Error fetching products', error: error.message });
-  }
-});
-// Get products by seller (public route for customers)
-router.get('/by-seller/:sellerId', async (req, res) => {
-  try {
-    const products = await Product.find({ 
-      sellerId: req.params.sellerId,
-      status: 'active'
-    }).sort({ createdAt: -1 });
-    
-    res.status(200).json({ products });
-  } catch (error) {
-    console.error('Error fetching seller products:', error);
-    res.status(500).json({ message: 'Error fetching products', error: error.message });
-  }
-});
-
-// Get all products (public route for customers)
-router.get('/all', async (req, res) => {
-  try {
-    const products = await Product.find({ status: 'active' })
-      .populate('sellerId', 'storeName businessType phone address isVerified')
-      .sort({ createdAt: -1 });
-    
-    res.status(200).json({ products });
-  } catch (error) {
-    console.error('Error fetching all products:', error);
-    res.status(500).json({ message: 'Error fetching products', error: error.message });
   }
 });
 

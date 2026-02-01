@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import './SellerStorefront.css';
 import Product from './Product';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from './config';
 
 const SellerStorefront = () => {
   const { sellerId } = useParams();

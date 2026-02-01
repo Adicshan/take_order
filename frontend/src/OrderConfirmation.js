@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './OrderConfirmation.css';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from './config';
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();

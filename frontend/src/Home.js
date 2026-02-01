@@ -2,48 +2,6 @@ import './Home.css';
 import { Link } from 'react-router-dom';
 
 function Home() {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: 'Premium Wireless Headphones',
-      seller: 'TechGear Store',
-      price: '$89.99',
-      originalPrice: '$129.99',
-      rating: '4.8',
-      reviews: 342,
-      image: '🎧'
-    },
-    {
-      id: 2,
-      name: 'Organic Coffee Beans - 1kg',
-      seller: 'Mountain Coffee Co.',
-      price: '$24.99',
-      originalPrice: '$34.99',
-      rating: '4.9',
-      reviews: 156,
-      image: '☕'
-    },
-    {
-      id: 3,
-      name: 'Stainless Steel Water Bottle',
-      seller: 'EcoLiving Brand',
-      price: '$32.50',
-      originalPrice: '$45.00',
-      rating: '4.7',
-      reviews: 289,
-      image: '🧴'
-    },
-    {
-      id: 4,
-      name: 'Professional Camera Tripod',
-      seller: 'ProPhoto Equipment',
-      price: '$45.99',
-      originalPrice: '$65.00',
-      rating: '4.6',
-      reviews: 198,
-      image: '📷'
-    }
-  ];
 
   const categories = [
     { name: 'Electronics', count: '2,543 products' },
@@ -66,7 +24,7 @@ function Home() {
           </div>
           <div className="nav-links">
             <Link to="/">Home</Link>
-            <Link to="/products">Browse Products</Link>
+         {/* <Link to="/products">Browse Products</Link>*/}
             <Link to="/marketplace">Sellers</Link>
             <Link to="/seller-signin" className="seller-link">Sell</Link>
             <Link to="/cart" className="cart-link">🛒 Cart</Link>
@@ -80,8 +38,8 @@ function Home() {
           <h1>Discover Quality Products from Trusted Sellers</h1>
           <p>Shop from thousands of verified sellers. Buy with confidence, sell with ease.</p>
           <div className="hero-buttons">
-            <Link to="/products" className="btn btn-primary">🛍️ Shop Now</Link>
-            <Link to="/seller-signin" className="btn btn-secondary">📦 Become a Seller</Link>
+            <Link to="/products" className="btn btn-primary">Shop Now</Link>
+            <Link to="/seller-signin" className="btn btn-secondary">Become a Seller</Link>
           </div>
         </div>
       </section>
@@ -94,35 +52,6 @@ function Home() {
             <div key={idx} className="category-card">
               <h3>{cat.name}</h3>
               <p>{cat.count}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="featured">
-        <div className="section-header">
-          <h2>Featured Products</h2>
-          <Link to="/products" className="view-all">View All →</Link>
-        </div>
-        <div className="products-grid">
-          {featuredProducts.map((product) => (
-            <div key={product.id} className="product-card">
-              <div className="product-image">{product.image}</div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <p className="seller-name">{product.seller}</p>
-                <div className="rating">
-                  <span className="stars">★★★★★</span>
-                  <span className="rating-score">{product.rating}</span>
-                  <span className="reviews">({product.reviews})</span>
-                </div>
-                <div className="price">
-                  <span className="current">{product.price}</span>
-                  <span className="original">{product.originalPrice}</span>
-                </div>
-                <button className="btn btn-sm">Add to Cart</button>
-              </div>
             </div>
           ))}
         </div>
@@ -162,19 +91,19 @@ function Home() {
           <p>Join thousands of successful sellers. Reach millions of customers worldwide.</p>
           <div className="seller-benefits">
             <div className="benefit">
-              <h4>✓ Easy Setup</h4>
+              <h4>Easy Setup</h4>
               <p>Create your store in minutes with no technical knowledge required.</p>
             </div>
             <div className="benefit">
-              <h4>✓ Low Fees</h4>
+              <h4>Low Fees</h4>
               <p>Keep more of your profits with our competitive commission rates.</p>
             </div>
             <div className="benefit">
-              <h4>✓ Analytics</h4>
+              <h4>Analytics</h4>
               <p>Track sales, inventory, and customer feedback in real-time.</p>
             </div>
             <div className="benefit">
-              <h4>✓ Support</h4>
+              <h4>Support</h4>
               <p>24/7 customer support team ready to help your business grow.</p>
             </div>
           </div>
@@ -206,7 +135,7 @@ function Home() {
       <section className="trust">
         <h2>Why Shop with Us</h2>
         <div className="trust-items">
-          <div className="trust-item">
+            <div className="trust-item">
             <h4>Verified Sellers</h4>
             <p>All sellers are verified and authenticated to ensure quality products.</p>
           </div>

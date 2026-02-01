@@ -1,22 +1,66 @@
-.cart-floating{
-  position:fixed;
-  right:18px;
-  top:12px;
-  background:linear-gradient(180deg,#0b5cff,#0a4ed6);
-  color:#fff;
-  border:0;
-  padding:10px 12px;
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  box-shadow:0 10px 30px rgba(11,92,255,0.18);
-  cursor:pointer;
-  z-index:2000;
+.cart-floating {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%);
+  color: var(--pure-white);
+  border: none;
+  padding: 14px 16px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 35px rgba(10, 10, 10, 0.35);
+  cursor: pointer;
+  z-index: 2000;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
-.cart-emoji{ font-size:18px }
-.cart-badge{ background:#ff4d4f; padding:2px 8px; border-radius:999px; font-weight:700 }
 
-@media(max-width:640px){
-  .cart-floating{ right:10px; top:8px; padding:8px }
+.cart-floating:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 45px rgba(10, 10, 10, 0.4);
+}
+
+.cart-floating:active {
+  transform: translateY(-4px);
+}
+
+.cart-emoji {
+  font-size: 20px;
+  animation: bounce 2s infinite;
+}
+
+.cart-badge {
+  background: var(--almost-white);
+  color: var(--primary-black);
+  padding: 3px 9px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 11px;
+  min-width: 24px;
+  text-align: center;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 640px) {
+  .cart-floating {
+    right: 16px;
+    bottom: 16px;
+    padding: 12px 14px;
+  }
+
+  .cart-emoji {
+    font-size: 18px;
+  }
 }

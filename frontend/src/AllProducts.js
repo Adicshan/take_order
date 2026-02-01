@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './AllProducts.css';
-
-const API_URL = 'http://localhost:5000/api';
+import Product from './Product';
+import { API_URL } from './config';
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -20,6 +20,7 @@ const AllProducts = () => {
       const response = await fetch(`${API_URL}/products/all`);
       if (response.ok) {
         const data = await response.json();
+        console.log('All Products loaded:', data.products);
         setProducts(data.products || []);
       }
       setLoading(false);
@@ -53,7 +54,7 @@ const AllProducts = () => {
   return (
     <div className="all-products-container">
       <div className="products-header">
-        <h1>🛍️ All Products</h1>
+        <h1>All Products</h1>
         <p>Browse products from all sellers</p>
       </div>
 
@@ -109,52 +110,7 @@ const AllProducts = () => {
       ) : (
         <div className="products-grid">
           {filteredAndSortedProducts.map(product => (
-            <Link 
-              to={`/product/${product._id}?seller=${product.sellerId}`}
-              key={product._id} 
-              className="product-card-link"
-            >
-              <div className="product-card">
-                {product.imageUrl && (
-                  <div className="product-image">
-                    <img 
-                      src={`${API_URL.split('/api')[0]}${product.imageUrl}`}
-                      alt={product.name}
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/250x250?text=Product';
-                      }}
-                    />
-                  </div>
-                )}
-                
-                <div className="product-content">
-                  <div className="product-header">
-                    <h3>{product.name}</h3>
-                    <span className="category-badge">{product.category}</span>
-                  </div>
-
-                  <p className="product-desc">{product.description.substring(0, 60)}...</p>
-
-                  <div className="product-rating">
-                    <span className="stars">★★★★★</span>
-                    <span className="rating-text">{product.totalReviews} reviews</span>
-                  </div>
-
-                  <div className="stock-info">
-                    {product.quantity > 0 ? (
-                      <span className="in-stock">✓ {product.quantity} in stock</span>
-                    ) : (
-                      <span className="out-of-stock">Out of Stock</span>
-                    )}
-                  </div>
-
-                  <div className="product-footer">
-                    <span className="price">${product.price.toFixed(2)}</span>
-                    <button className="add-btn">Add to Cart</button>
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <Product key={product._id} product={product} />
           ))}
         </div>
       )}

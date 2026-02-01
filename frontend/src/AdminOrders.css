@@ -2,45 +2,52 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
-  background: #f5f5f5;
+  background: var(--almost-white);
   min-height: 100vh;
+  font-family: 'Lora', 'Inter', serif, sans-serif;
 }
 
 .admin-orders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--pure-white);
   padding: 30px;
-  border-radius: 8px;
+  border-radius: 6px;
   margin-bottom: 30px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--almost-white);
 }
 
 .header-content h1 {
   margin: 0 0 10px 0;
   font-size: 28px;
-  color: #333;
+  color: var(--primary-black);
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
 }
 
 .header-content p {
   margin: 0;
-  color: #666;
+  color: var(--light-grey);
   font-size: 14px;
+  font-family: 'Lora', serif;
 }
 
 .back-link {
-  color: #007bff;
+  color: var(--secondary-black);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   padding: 10px 20px;
   border-radius: 4px;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  border: 2px solid transparent;
 }
 
 .back-link:hover {
-  background: #f0f0f0;
-  color: #0056b3;
+  background: var(--almost-white);
+  border-color: var(--secondary-black);
 }
 
 /* Statistics */
@@ -52,34 +59,45 @@
 }
 
 .stat-card {
-  background: white;
+  background: var(--pure-white);
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
   text-align: center;
-  border-left: 4px solid #ddd;
+  border-left: 4px solid var(--dark-grey);
+  border: 2px solid var(--almost-white);
+  transition: all 0.3s ease;
 }
 
-.stat-card.total { border-left-color: #007bff; }
-.stat-card.pending { border-left-color: #ffc107; }
-.stat-card.confirmed { border-left-color: #17a2b8; }
-.stat-card.processing { border-left-color: #fd7e14; }
-.stat-card.shipped { border-left-color: #6f42c1; }
-.stat-card.delivered { border-left-color: #28a745; }
-.stat-card.revenue { border-left-color: #20c997; }
+.stat-card:hover {
+  border-color: var(--secondary-black);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-card.total { border-left-color: var(--primary-black); }
+.stat-card.pending { border-left-color: var(--medium-grey); }
+.stat-card.confirmed { border-left-color: var(--dark-grey); }
+.stat-card.processing { border-left-color: var(--light-grey); }
+.stat-card.shipped { border-left-color: var(--secondary-black); }
+.stat-card.delivered { border-left-color: var(--primary-black); }
+.stat-card.revenue { border-left-color: var(--dark-grey); }
 
 .stat-label {
   font-size: 12px;
-  color: #666;
+  color: var(--light-grey);
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
 }
 
 .stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: var(--primary-black);
+  font-family: 'Inter', sans-serif;
 }
 
 /* Filters */
