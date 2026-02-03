@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
 import './AllProducts.css';
 import Product from './Product';
 import { API_URL } from './config';

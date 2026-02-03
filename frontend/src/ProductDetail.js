@@ -15,10 +15,7 @@ const ProductDetail = () => {
   const [buyer, setBuyer] = useState({ fullName: '', email: '', phone: '', address: '', city: '', state: '', zipCode: '' });
 
   useEffect(() => {
-    fetchProductData();
-  }, [productId]);
-
-  const fetchProductData = async () => {
+     const fetchProductData = async () => {
     try {
       const response = await fetch(`${API_URL}/products/${productId}`);
       if (response.ok) {
@@ -41,6 +38,10 @@ const ProductDetail = () => {
     }
   };
 
+    fetchProductData();
+  }, [productId]);
+
+ 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const existingItem = cart.find(item => item._id === product._id);
@@ -62,12 +63,7 @@ const ProductDetail = () => {
     }, 2000);
   };
 
-  const handleCheckout = () => {
-    handleAddToCart();
-    setTimeout(() => {
-      navigate('/cart');
-    }, 300);
-  };
+ 
 
   if (loading) {
     return <div className="loading">Loading product...</div>;
