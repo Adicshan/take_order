@@ -25,15 +25,17 @@ const CartFloating = () => {
 
   // show floating cart only on product-related pages
   const path = location.pathname || '';
-  const show = path.startsWith('/product/') || path.startsWith('/Product/');
+    const show = path.includes('/product/') || path.startsWith('/Product/');
   if (!show) return null;
 
   // prefer product id from path for cart URL (path: /product/:id or /Product/:id)
   const parts = path.split('/').filter(Boolean); // removes empty
-  const productId = parts.length >= 2 ? parts[1] : (parts[0] || '');
+    const storeSlug = parts.length >= 1 && /[a-z-]/i.test(parts[0]) && !parts[0].includes('.') ? parts[0] : '';
+    const productId = parts.length >= 3 ? parts[2] : (parts.length >= 2 ? parts[1] : '');
 
   const goToCart = () => {
-    if (productId) navigate(`/cart/${productId}`);
+      if (storeSlug) navigate(`/${storeSlug}/cart`);
+      else if (productId) navigate(`/cart/${productId}`);
     else navigate('/cart');
   };
 

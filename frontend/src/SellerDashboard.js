@@ -553,13 +553,13 @@ const SellerDashboard = () => {
                 <div className="public-url">
                   <h5>Public Store URL</h5>
                   <div className="url-row">
-                    <a href={`${window.location.origin}/Product/${seller?._id}`} target="_blank" rel="noreferrer">
-                      {`${window.location.origin}/Product/${seller?._id}`}
+                      <a href={`${window.location.origin}/${seller?.storeSlug}`} target="_blank" rel="noreferrer">
+                        {`${window.location.origin}/${seller?.storeSlug}`}
                     </a>
                     <button
                       className="copy-btn"
                       onClick={() => {
-                        const url = `${window.location.origin}/Product/${seller?._id}`;
+                          const url = `${window.location.origin}/${seller?.storeSlug}`;
                         try {
                           navigator.clipboard.writeText(url);
                           setMessage({ type: 'success', text: 'Store URL copied to clipboard' });
