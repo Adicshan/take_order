@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Seller = require('../models/Seller');
+const slugify = require('slugify');
 const jwt = require('jwt-simple');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
@@ -39,13 +40,14 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    // Create new seller
+    // Create new seller (ensure storeSlug generated)
     const seller = new Seller({
       fullName,
       email,
       password,
       phone,
       storeName,
+      storeSlug: slugify(storeName || '', { lower: true, strict: true }),
       businessType,
       address,
       taxId,
@@ -129,6 +131,16 @@ router.get('/profile', async (req, res) => {
 
     if (!seller) {
       return res.status(404).json({ error: 'Seller not found' });
+    }
+
+    // Ensure existing sellers have a storeSlug (migration / fallback)
+    if (!seller.storeSlug && seller.storeName) {
+      try {
+        seller.storeSlug = slugify(seller.storeName || '', { lower: true, strict: true });
+        await seller.save();
+      } catch (err) {
+        console.error('Error generating storeSlug for seller:', err);
+      }
     }
 
     res.json({
