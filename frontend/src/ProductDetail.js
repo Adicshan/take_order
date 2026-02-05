@@ -4,7 +4,7 @@ import './ProductDetail.css';
 import { API_URL } from './config';
 
 const ProductDetail = () => {
-  const { productId, storeSlug } = useParams();
+  const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [seller, setSeller] = useState(null);
@@ -59,6 +59,8 @@ const ProductDetail = () => {
     }
     
     localStorage.setItem('cart', JSON.stringify(cart));
+    // notify other UI that cart changed
+    try { window.dispatchEvent(new Event('cartUpdated')); } catch(e){}
     // Store seller info for navigation
     if (seller) {
       try { 

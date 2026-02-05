@@ -23,22 +23,22 @@ const CartFloating = () => {
     };
   }, []);
 
-  // show floating cart on home, storefront (/:storeSlug) and product/view pages
+  // show floating cart on storefront (/:storeSlug) and product/view pages
   const path = location.pathname || '';
   const parts = path.split('/').filter(Boolean); // removes empty
-  const isHome = path === '/';
-  const isStorefront = parts.length === 1 && parts[0] && parts[0] !== 'products' && parts[0] !== 'marketplace' && parts[0] !== 'admin' && parts[0] !== 'seller-auth' && parts[0] !== 'seller-signin' && parts[0] !== 'seller-signup';
+  // Exclude known top-level routes so they are not mistaken for a storeSlug
+  const excludedTopLevel = ['products','marketplace','admin','seller-auth','seller-signin','seller-signup','seller-dashboard','cart','order','product','view','public'];
+  const isStorefront = parts.length === 1 && parts[0] && !excludedTopLevel.includes(parts[0]);
   const isProductView = path.includes('/view/') || path.includes('/product/');
 
-  const show = isHome || isStorefront || isProductView;
+  const show = isStorefront || isProductView;
   if (!show) return null;
 
-  const storeSlug = parts.length >= 1 && /[a-z-]/i.test(parts[0]) && !parts[0].includes('.') ? parts[0] : '';
-  const productId = parts.length >= 3 ? parts[2] : (parts.length >= 2 ? parts[1] : '');
+  // Extract storeSlug from first part of URL if it's not an excluded route
+  const storeSlug = (parts.length >= 1 && /[a-z-]/i.test(parts[0]) && !parts[0].includes('.') && !excludedTopLevel.includes(parts[0])) ? parts[0] : '';
 
   const goToCart = () => {
     if (storeSlug) navigate(`/${storeSlug}/cart`);
-    else if (productId) navigate(`/cart/${productId}`);
     else navigate('/cart');
   };
 

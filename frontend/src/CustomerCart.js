@@ -21,12 +21,7 @@ const CustomerCart = () => {
     return cart && cart.length > 0 ? (cart[0].seller?.storeSlug || cart[0].seller?._id || '') : '';
   };
 
-  const storeNameForLinks = () => {
-    if (params && params.storeName) return params.storeName;
-    const stored = localStorage.getItem('currentStoreName');
-    if (stored) return stored;
-    return '';
-  };
+
 
   const loadCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -41,12 +36,16 @@ const CustomerCart = () => {
     );
     setCartItems(updated);
     localStorage.setItem('cart', JSON.stringify(updated));
+    // notify floating cart and other listeners
+    try { window.dispatchEvent(new Event('cartUpdated')); } catch(e){}
   };
 
   const removeItem = (productId) => {
     const updated = cartItems.filter(item => item._id !== productId);
     setCartItems(updated);
     localStorage.setItem('cart', JSON.stringify(updated));
+    // notify floating cart and other listeners
+    try { window.dispatchEvent(new Event('cartUpdated')); } catch(e){}
   };
 
   const calculateSubtotal = () => {
@@ -100,7 +99,9 @@ const CustomerCart = () => {
   };
 
   if (cartItems.length === 0) {
-    const sellerLink = sellerIdForLinks() ? `/${sellerIdForLinks()}/cart` : '/';
+    const sellerId = sellerIdForLinks();
+    const invalid = ['cart','order','products','marketplace','admin','seller-auth','seller-signin','seller-signup'];
+    const sellerLink = sellerId && !invalid.includes(sellerId) ? `/${sellerId}/cart` : '/';
     return (
       <div className="cart-container">
         <div className="empty-cart">

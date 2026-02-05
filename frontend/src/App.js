@@ -8,13 +8,14 @@ import SellerDashboard from './SellerDashboard';
 import AllProducts from './AllProducts';
 import CustomerMarketplace from './CustomerMarketplace';
 import SellerStorefront from './SellerStorefront';
-import Product from './Product';
 import ProductDetail from './ProductDetail';
 import CustomerCart from './CustomerCart';
 import Order from './Order';
 import OrderConfirmation from './OrderConfirmation';
 import AdminOrders from './AdminOrders';
 import CartFloating from './CartFloating';
+import ProductToStore from './Redirects/ProductToStore';
+import SellerToStore from './Redirects/SellerToStore';
 
 function App() {
   return (
@@ -41,11 +42,12 @@ function App() {
         <Route path="/:storeSlug/cart" element={<CustomerCart />} />
         <Route path="/:storeSlug/order" element={<Order />} />
         
-        {/* Fallback routes for legacy/direct product access */}
-        <Route path="/product/:productId" element={<ProductDetail />} />
-        <Route path="/view/:productId" element={<ProductDetail />} />
+        {/* Fallback routes for legacy/direct product access - redirect to slug-based routes */}
+        <Route path="/product/:productId" element={<ProductToStore />} />
+        <Route path="/view/:productId" element={<ProductToStore />} />
         <Route path="/cart" element={<CustomerCart />} />
-        <Route path="/order/:sellerId" element={<Order />} />
+        <Route path="/cart/:sellerId" element={<SellerToStore target={'cart'} />} />
+        <Route path="/order/:sellerId" element={<SellerToStore target={'order'} />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/admin/orders" element={<AdminOrders />} />
         
