@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './SellerAuth.css';
 import { API_URL } from './config';
+import slugify from 'slugify';
 
 const SellerSignUp = () => {
   const navigate = useNavigate();
@@ -110,6 +111,7 @@ const SellerSignUp = () => {
         password: formData.password,
         phone: formData.phone,
         storeName: formData.storeName,
+        storeSlug: slugify(formData.storeName || '', { lower: true, strict: true }),
         businessType: formData.businessType,
         address: {
           street: formData.street,
