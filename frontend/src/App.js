@@ -36,6 +36,8 @@ function App() {
         {/* Shop routes - by storeSlug (main route) */}
         <Route path="/:storeSlug" element={<SellerStorefront />} />
         <Route path="/:storeSlug/product/:productId" element={<ProductDetail />} />
+        {/* Alias: allow /:storeSlug/view/:productId so URLs like /adicshan/view/:id work */}
+        <Route path="/:storeSlug/view/:productId" element={<ProductDetail />} />
         <Route path="/:storeSlug/cart" element={<CustomerCart />} />
         <Route path="/:storeSlug/order" element={<Order />} />
         
