@@ -38,7 +38,7 @@ const Product = ({ product, showBuy = true }) => {
 
   // Get storeSlug for URL generation
   const storeSlug = (product.seller && product.seller.storeSlug) || '';
-  const productDetailLink = storeSlug ? `/shop/${storeSlug}/product/${product._id}` : `/view/${product._id}`;
+  const productDetailLink = storeSlug ? `/${storeSlug}/product/${product._id}` : `/view/${product._id}`;
 
   return (
     <div className="product-card">

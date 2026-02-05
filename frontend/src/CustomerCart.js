@@ -89,7 +89,7 @@ const CustomerCart = () => {
       localStorage.setItem('pendingOrder', JSON.stringify(order));
 
       // Navigate to order page with store slug or seller ID
-      const orderLink = firstSellerSlug ? `/shop/${firstSellerSlug}/order` : `/order/${firstSellerId}`;
+      const orderLink = firstSellerSlug ? `/${firstSellerSlug}/order` : `/order/${firstSellerId}`;
       navigate(orderLink);
     } catch (error) {
       console.error('Checkout error:', error);
@@ -100,7 +100,7 @@ const CustomerCart = () => {
   };
 
   if (cartItems.length === 0) {
-    const sellerLink = sellerIdForLinks() ? `/shop/${sellerIdForLinks()}/cart` : '/';
+    const sellerLink = sellerIdForLinks() ? `/${sellerIdForLinks()}/cart` : '/';
     return (
       <div className="cart-container">
         <div className="empty-cart">
@@ -118,7 +118,7 @@ const CustomerCart = () => {
     <div className="cart-container">
       <div className="cart-header">
         <h1>🛒 Shopping Cart</h1>
-        <Link to={ sellerIdForLinks() ? `/shop/${sellerIdForLinks()}` : '/' } className="back-link">← Continue Shopping</Link>
+        <Link to={ sellerIdForLinks() ? `/${sellerIdForLinks()}` : '/' } className="back-link">← Continue Shopping</Link>
       </div>
 
       <div className="cart-content">

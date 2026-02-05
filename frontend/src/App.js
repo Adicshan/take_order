@@ -33,19 +33,16 @@ function App() {
         <Route path="/products" element={<AllProducts />} />
         <Route path="/marketplace" element={<CustomerMarketplace />} />
         
-        {/* Shop routes - by storeSlug (new) */}
-        <Route path="/shop/:storeSlug" element={<SellerStorefront />} />
-        <Route path="/shop/:storeSlug/product/:productId" element={<ProductDetail />} />
-        <Route path="/shop/:storeSlug/cart" element={<CustomerCart />} />
-        <Route path="/shop/:storeSlug/order" element={<Order />} />
+        {/* Shop routes - by storeSlug (main route) */}
+        <Route path="/:storeSlug" element={<SellerStorefront />} />
+        <Route path="/:storeSlug/product/:productId" element={<ProductDetail />} />
+        <Route path="/:storeSlug/cart" element={<CustomerCart />} />
+        <Route path="/:storeSlug/order" element={<Order />} />
         
-        {/* Shop routes - by sellerId (legacy) */}
-        <Route path="/shop/:sellerId" element={<SellerStorefront />} />
-        <Route path="/Product/:sellerId" element={<SellerStorefront />} />
+        {/* Fallback routes for legacy/direct product access */}
         <Route path="/product/:productId" element={<ProductDetail />} />
         <Route path="/view/:productId" element={<ProductDetail />} />
         <Route path="/cart" element={<CustomerCart />} />
-        <Route path="/cart/:sellerId" element={<CustomerCart />} />
         <Route path="/order/:sellerId" element={<Order />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
         <Route path="/admin/orders" element={<AdminOrders />} />

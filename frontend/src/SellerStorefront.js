@@ -18,16 +18,21 @@ const SellerStorefront = () => {
 
   const fetchSellerData = async () => {
     try {
-      // Determine which endpoint to use based on parameter
+      // Use storeSlug if available (new route), otherwise use sellerId (legacy)
       let sellerEndpoint;
       let productsEndpoint;
       
-      if (storeSlug) {
-        sellerEndpoint = `${API_URL}/sellers/by-store/${storeSlug}`;
-        productsEndpoint = `${API_URL}/products/by-store/${storeSlug}`;
+      const slug = storeSlug || sellerId; // Use whichever is available
+      
+      // Check if it looks like a slug (contains letters) or an ID (all hex/numbers)
+      const isSlug = slug && /[a-z-]/i.test(slug);
+      
+      if (isSlug) {
+        sellerEndpoint = `${API_URL}/sellers/by-store/${slug}`;
+        productsEndpoint = `${API_URL}/products/by-store/${slug}`;
       } else {
-        sellerEndpoint = `${API_URL}/sellers/${sellerId}`;
-        productsEndpoint = `${API_URL}/products/by-seller/${sellerId}`;
+        sellerEndpoint = `${API_URL}/sellers/${slug}`;
+        productsEndpoint = `${API_URL}/products/by-seller/${slug}`;
       }
 
       const [sellerRes, productsRes] = await Promise.all([

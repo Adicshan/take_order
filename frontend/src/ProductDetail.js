@@ -194,7 +194,7 @@ const ProductDetail = () => {
                   onClick={() => {
                     handleAddToCart();
                     setTimeout(() => {
-                      const cartLink = seller && seller.storeSlug ? `/shop/${seller.storeSlug}/cart` : '/cart';
+                      const cartLink = seller && seller.storeSlug ? `/${seller.storeSlug}/cart` : '/cart';
                       navigate(cartLink);
                     }, 300);
                   }}
