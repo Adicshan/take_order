@@ -108,7 +108,7 @@ router.get('/seller-products', verifySeller, async (req, res) => {
 router.get('/all', async (req, res) => {
   try {
     const products = await Product.find({ status: 'active' })
-      .populate('sellerId', 'storeName businessType phone address isVerified')
+      .populate('sellerId', 'storeName businessType phone address isVerified storeSlug')
       .sort({ createdAt: -1 });
     
     res.status(200).json({ products });
@@ -125,12 +125,36 @@ router.get('/by-seller/:sellerId', async (req, res) => {
       sellerId: req.params.sellerId,
       status: 'active'
     })
-      .populate('sellerId', 'storeName businessType phone address isVerified')
+      .populate('sellerId', 'storeName businessType phone address isVerified storeSlug')
       .sort({ createdAt: -1 });
     
     res.status(200).json({ products });
   } catch (error) {
     console.error('Error fetching seller products:', error);
+    res.status(500).json({ message: 'Error fetching products', error: error.message });
+  }
+});
+
+// Get products by store slug
+router.get('/by-store/:storeSlug', async (req, res) => {
+  try {
+    const Seller = require('../models/Seller');
+    const seller = await Seller.findOne({ storeSlug: req.params.storeSlug });
+    
+    if (!seller) {
+      return res.status(404).json({ message: 'Seller not found' });
+    }
+
+    const products = await Product.find({ 
+      sellerId: seller._id,
+      status: 'active'
+    })
+      .populate('sellerId', 'storeName businessType phone address isVerified storeSlug')
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json({ products });
+  } catch (error) {
+    console.error('Error fetching store products:', error);
     res.status(500).json({ message: 'Error fetching products', error: error.message });
   }
 });

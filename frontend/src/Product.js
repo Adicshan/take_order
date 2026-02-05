@@ -20,7 +20,12 @@ const Product = ({ product, showBuy = true }) => {
     }
     localStorage.setItem('cart', JSON.stringify(cart));
     // remember last seller viewed/added for cart navigation
-    try { localStorage.setItem('currentSeller', product.sellerId || (product.seller && product.seller._id) || product.seller || ''); } catch(e){}
+    try { 
+      localStorage.setItem('currentSeller', product.sellerId || (product.seller && product.seller._id) || product.seller || '');
+      // Also store the seller's storeSlug if available
+      const storeSlug = (product.seller && product.seller.storeSlug) || '';
+      if (storeSlug) localStorage.setItem('currentStoreSlug', storeSlug);
+    } catch(e){}
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
     window.dispatchEvent(new Event('cartUpdated'));
@@ -30,6 +35,10 @@ const Product = ({ product, showBuy = true }) => {
 
   const ratingDisplay = typeof product.rating === 'number' ? product.rating.toFixed(1) : (product.rating || null);
   const reviews = product.reviewCount || product.reviews || null;
+
+  // Get storeSlug for URL generation
+  const storeSlug = (product.seller && product.seller.storeSlug) || '';
+  const productDetailLink = storeSlug ? `/shop/${storeSlug}/product/${product._id}` : `/view/${product._id}`;
 
   return (
     <div className="product-card">
@@ -54,7 +63,7 @@ const Product = ({ product, showBuy = true }) => {
           {product.originalPrice ? <span className="original">${product.originalPrice}</span> : null}
         </div>
         <div className="product-actions">
-          <Link to={`/view/${product._id}`} className="btn btn-sm outline">View</Link>
+          <Link to={productDetailLink} className="btn btn-sm outline">View</Link>
           {showBuy && (
             <button className="btn btn-sm primary" onClick={handleAddToCart}>Add to Cart</button>
           )}

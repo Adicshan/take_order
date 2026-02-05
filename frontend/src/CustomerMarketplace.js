@@ -72,7 +72,7 @@ const CustomerMarketplace = () => {
       ) : (
         <div className="sellers-grid">
           {filteredSellers.map(seller => (
-            <Link to={`/shop/${seller._id}`} key={seller._id} className="seller-card-link">
+            <Link to={`/shop/${seller.storeSlug}`} key={seller._id} className="seller-card-link">
               <div className="seller-card">
                 <div className="seller-badge">{seller.businessType}</div>
                 <div className="seller-info">

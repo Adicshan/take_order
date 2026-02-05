@@ -14,11 +14,18 @@ const CustomerCart = () => {
   }, []);
 
   const sellerIdForLinks = () => {
-    if (params && params.sellerId) return params.sellerId;
-    const stored = localStorage.getItem('currentSeller');
+    if (params && params.storeSlug) return params.storeSlug;
+    const stored = localStorage.getItem('currentStoreSlug');
     if (stored) return stored;
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    return cart && cart.length > 0 ? (cart[0].sellerId || '') : '';
+    return cart && cart.length > 0 ? (cart[0].seller?.storeSlug || cart[0].seller?._id || '') : '';
+  };
+
+  const storeNameForLinks = () => {
+    if (params && params.storeName) return params.storeName;
+    const stored = localStorage.getItem('currentStoreName');
+    if (stored) return stored;
+    return '';
   };
 
   const loadCart = () => {
@@ -58,6 +65,7 @@ const CustomerCart = () => {
     try {
       // Get the first seller from cart items
       const firstSellerId = cartItems[0]?.sellerId;
+      const firstSellerSlug = cartItems[0]?.seller?.storeSlug || '';
 
       // Create order and store in localStorage
       const order = {
@@ -80,8 +88,9 @@ const CustomerCart = () => {
       // Save order to localStorage for the order page to use
       localStorage.setItem('pendingOrder', JSON.stringify(order));
 
-      // Navigate to order page with seller ID
-      navigate(`/order/${firstSellerId}`);
+      // Navigate to order page with store slug or seller ID
+      const orderLink = firstSellerSlug ? `/shop/${firstSellerSlug}/order` : `/order/${firstSellerId}`;
+      navigate(orderLink);
     } catch (error) {
       console.error('Checkout error:', error);
       alert('Error during checkout. Please try again.');
@@ -91,7 +100,7 @@ const CustomerCart = () => {
   };
 
   if (cartItems.length === 0) {
-    const sellerLink = sellerIdForLinks() ? `/product/${sellerIdForLinks()}` : '/';
+    const sellerLink = sellerIdForLinks() ? `/shop/${sellerIdForLinks()}/cart` : '/';
     return (
       <div className="cart-container">
         <div className="empty-cart">
@@ -109,7 +118,7 @@ const CustomerCart = () => {
     <div className="cart-container">
       <div className="cart-header">
         <h1>🛒 Shopping Cart</h1>
-        <Link to={ sellerIdForLinks() ? `/product/${sellerIdForLinks()}` : '/' } className="back-link">← Continue Shopping</Link>
+        <Link to={ sellerIdForLinks() ? `/shop/${sellerIdForLinks()}` : '/' } className="back-link">← Continue Shopping</Link>
       </div>
 
       <div className="cart-content">

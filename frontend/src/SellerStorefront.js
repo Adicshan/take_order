@@ -5,7 +5,7 @@ import Product from './Product';
 import { API_URL } from './config';
 
 const SellerStorefront = () => {
-  const { sellerId } = useParams();
+  const { sellerId, storeSlug } = useParams();
   const navigate = useNavigate();
   const [seller, setSeller] = useState(null);
   const [products, setProducts] = useState([]);
@@ -14,18 +14,33 @@ const SellerStorefront = () => {
 
   useEffect(() => {
     fetchSellerData();
-  }, [sellerId]);
+  }, [sellerId, storeSlug]);
 
   const fetchSellerData = async () => {
     try {
+      // Determine which endpoint to use based on parameter
+      let sellerEndpoint;
+      let productsEndpoint;
+      
+      if (storeSlug) {
+        sellerEndpoint = `${API_URL}/sellers/by-store/${storeSlug}`;
+        productsEndpoint = `${API_URL}/products/by-store/${storeSlug}`;
+      } else {
+        sellerEndpoint = `${API_URL}/sellers/${sellerId}`;
+        productsEndpoint = `${API_URL}/products/by-seller/${sellerId}`;
+      }
+
       const [sellerRes, productsRes] = await Promise.all([
-        fetch(`${API_URL}/sellers/${sellerId}`),
-        fetch(`${API_URL}/products/by-seller/${sellerId}`)
+        fetch(sellerEndpoint),
+        fetch(productsEndpoint)
       ]);
 
       if (sellerRes.ok) {
         const sellerData = await sellerRes.json();
         setSeller(sellerData.seller);
+        // Store seller ID and storeSlug for later use
+        try { localStorage.setItem('currentSeller', sellerData.seller._id); } catch(e){}
+        try { localStorage.setItem('currentStoreSlug', sellerData.seller.storeSlug); } catch(e){}
       }
 
       if (productsRes.ok) {

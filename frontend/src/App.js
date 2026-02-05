@@ -32,6 +32,14 @@ function App() {
         {/* Customer Routes */}
         <Route path="/products" element={<AllProducts />} />
         <Route path="/marketplace" element={<CustomerMarketplace />} />
+        
+        {/* Shop routes - by storeSlug (new) */}
+        <Route path="/shop/:storeSlug" element={<SellerStorefront />} />
+        <Route path="/shop/:storeSlug/product/:productId" element={<ProductDetail />} />
+        <Route path="/shop/:storeSlug/cart" element={<CustomerCart />} />
+        <Route path="/shop/:storeSlug/order" element={<Order />} />
+        
+        {/* Shop routes - by sellerId (legacy) */}
         <Route path="/shop/:sellerId" element={<SellerStorefront />} />
         <Route path="/Product/:sellerId" element={<SellerStorefront />} />
         <Route path="/product/:productId" element={<ProductDetail />} />

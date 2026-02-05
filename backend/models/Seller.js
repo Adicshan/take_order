@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const slugify = require('slugify');
 
 const sellerSchema = new mongoose.Schema({
   // Personal Information
@@ -29,6 +30,12 @@ const sellerSchema = new mongoose.Schema({
   storeName: {
     type: String,
     required: true,
+    trim: true
+  },
+  storeSlug: {
+    type: String,
+    unique: true,
+    lowercase: true,
     trim: true
   },
   businessType: {
@@ -117,6 +124,11 @@ const sellerSchema = new mongoose.Schema({
 
 // Hash password before saving
 sellerSchema.pre('save', async function(next) {
+  // Generate slug from storeName
+  if (this.isModified('storeName')) {
+    this.storeSlug = slugify(this.storeName, { lower: true, strict: true });
+  }
+
   if (!this.isModified('password')) return next();
   
   try {

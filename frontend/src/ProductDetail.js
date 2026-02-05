@@ -4,7 +4,7 @@ import './ProductDetail.css';
 import { API_URL } from './config';
 
 const ProductDetail = () => {
-  const { productId } = useParams();
+  const { productId, storeSlug } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [seller, setSeller] = useState(null);
@@ -28,7 +28,10 @@ const ProductDetail = () => {
           const sellerData = await sellerRes.json();
           setSeller(sellerData.seller);
           // remember seller for cart navigation
-          try { localStorage.setItem('currentSeller', sellerData.seller._id); } catch(e){}
+          try { 
+            localStorage.setItem('currentSeller', sellerData.seller._id);
+            localStorage.setItem('currentStoreSlug', sellerData.seller.storeSlug);
+          } catch(e){}
         }
       }
       setLoading(false);
@@ -56,6 +59,13 @@ const ProductDetail = () => {
     }
     
     localStorage.setItem('cart', JSON.stringify(cart));
+    // Store seller info for navigation
+    if (seller) {
+      try { 
+        localStorage.setItem('currentSeller', seller._id);
+        localStorage.setItem('currentStoreName', seller.storeName);
+      } catch(e){}
+    }
     setAddedToCart(true);
     
     setTimeout(() => {
@@ -184,7 +194,8 @@ const ProductDetail = () => {
                   onClick={() => {
                     handleAddToCart();
                     setTimeout(() => {
-                      navigate('/cart');
+                      const cartLink = seller && seller.storeSlug ? `/shop/${seller.storeSlug}/cart` : '/cart';
+                      navigate(cartLink);
                     }, 300);
                   }}
                 >
