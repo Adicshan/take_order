@@ -62,9 +62,10 @@ const CustomerCart = () => {
     setLoading(true);
 
     try {
-      // Get the first seller from cart items
-      const firstSellerId = cartItems[0]?.sellerId;
-      const firstSellerSlug = cartItems[0]?.seller?.storeSlug || '';
+      // Get the first seller from cart items — prefer storeSlug, fall back to stored values
+      const firstItem = cartItems[0] || {};
+      const firstSellerSlug = firstItem?.seller?.storeSlug || localStorage.getItem('currentStoreSlug') || '';
+      const firstSellerId = firstItem?.sellerId || firstItem?.seller?._id || localStorage.getItem('currentSeller') || '';
 
       // Create order and store in localStorage
       const order = {
@@ -87,8 +88,10 @@ const CustomerCart = () => {
       // Save order to localStorage for the order page to use
       localStorage.setItem('pendingOrder', JSON.stringify(order));
 
-      // Navigate to order page with store slug or seller ID
-      const orderLink = firstSellerSlug ? `/${firstSellerSlug}/order` : `/order/${firstSellerId}`;
+      // Navigate to order page with store slug or seller ID (fallbacks handled)
+      let orderLink = '/';
+      if (firstSellerSlug) orderLink = `/${firstSellerSlug}/order`;
+      else if (firstSellerId) orderLink = `/order/${firstSellerId}`;
       navigate(orderLink);
     } catch (error) {
       console.error('Checkout error:', error);
