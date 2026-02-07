@@ -418,31 +418,76 @@ const SellerDashboard = () => {
                 </div>
               ) : (
                 <div className="products-table-wrapper">
-                  <table className="data-table">
+                  <table className="products-table">
                     <thead>
                       <tr>
-                        <th>Name</th>
+                        <th>Product</th>
                         <th>Price</th>
-                        <th>Quantity</th>
+                        <th>Stock</th>
                         <th>Category</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th className="actions-header">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {products.map(product => (
-                        <tr key={product._id}>
-                          <td>{product.name}</td>
-                          <td>${product.price.toFixed(2)}</td>
-                          <td>{product.quantity}</td>
-                          <td>{product.category}</td>
-                          <td>
-                            <span className={`status-badge ${product.status}`}>
-                              {product.status}
+                        <tr key={product._id} className={`product-row status-${product.status}`}>
+                          <td className="product-name-cell">
+                            <div className="product-name">
+                              <span className="product-icon">📦</span>
+                              <div className="product-details">
+                                <span className="product-title">{product.name}</span>
+                                <span className="product-id">ID: {product._id.substring(0, 8)}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="product-price" style={{backgroundColor:"transparent"}}>
+                            <span className="price-value" style={{backgroundColor:"transparent",color:"black",fontSize:"15px"}}>{product.price.toFixed(2)}</span>
+                          </td>
+                          <td className="product-stock">
+                            <span className={`stock-badge ${product.quantity > 10 ? 'in-stock' : product.quantity > 0 ? 'low-stock' : 'out-of-stock'}`}>
+                              {product.quantity} units
                             </span>
                           </td>
-                          <td>
-                            <button className="action-btn delete" onClick={() => handleDeleteProduct(product._id)}>Delete</button>
+                          <td className="product-category">
+                            <span className="category-tag">{product.category}</span>
+                          </td>
+                          <td className="product-status">
+                            <span className={`status-badge ${product.status}`}>
+                              {product.status === 'active' ? '✓ Active' : '○ Inactive'}
+                            </span>
+                          </td>
+                          <td className="product-actions">
+                            <div className="action-buttons">
+                              <a 
+                                href={`/${seller?.storeSlug}/view/${product._id}`} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="action-link view"
+                                title="View product"
+                              >
+                                View
+                              </a>
+                              <button 
+                                className="action-link copy"
+                                onClick={() => {
+                                  const url = `${window.location.origin}/${seller?.storeSlug}/view/${product._id}`;
+                                  navigator.clipboard.writeText(url);
+                                  setMessage({ type: 'success', text: 'Product URL copied!' });
+                                  setTimeout(() => setMessage({ type: '', text: '' }), 2500);
+                                }}
+                                title="Copy product URL"
+                              >
+                                Copy
+                              </button>
+                              <button 
+                                className="action-link delete"
+                                onClick={() => handleDeleteProduct(product._id)}
+                                title="Delete product"
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -526,9 +571,16 @@ const SellerDashboard = () => {
                             )}
                           </td>
                           <td>
-                            <span className={`status-badge ${order.status || 'pending'}`}>
-                              {order.status || 'pending'}
-                            </span>
+                            <div>
+                              <span className={`status-badge ${order.status || 'pending'}`}>
+                                {order.status || 'pending'}
+                              </span>
+                              {order.status === 'dispatched' && (
+                                <div style={{ marginTop: '8px', padding: '8px 12px', background: 'var(--parrot-green)', color: 'var(--pure-white)', borderRadius: '2px', fontSize: '11px', fontWeight: '600', textAlign: 'center' }}>
+                                  ✓ Done
+                                </div>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -542,24 +594,44 @@ const SellerDashboard = () => {
           {/* Settings Tab */}
           {activeTab === 'settings' && (
             <div className="settings-section">
-              <h2>Store Settings</h2>
+              <h2>Store Information</h2>
               <div className="settings-card">
-                <h4>Store Information</h4>
-                <p><strong>Store Name:</strong> {seller?.storeName}</p>
-                <p><strong>Email:</strong> {seller?.email}</p>
-                <p><strong>Phone:</strong> {seller?.phone}</p>
-                <p><strong>Business Type:</strong> {seller?.businessType}</p>
-                <p><strong>Status:</strong> {seller?.isVerified ? 'Verified' : 'Pending Verification'}</p>
+                <h4>📦 Store Details</h4>
+                <div className="settings-info-grid">
+                  <div className="settings-info-item">
+                    <span className="settings-info-label">Store Name</span>
+                    <span className="settings-info-value">{seller?.storeName}</span>
+                  </div>
+                  <div className="settings-info-item">
+                    <span className="settings-info-label">Email</span>
+                    <span className="settings-info-value">{seller?.email}</span>
+                  </div>
+                  <div className="settings-info-item">
+                    <span className="settings-info-label">Phone</span>
+                    <span className="settings-info-value">{seller?.phone}</span>
+                  </div>
+                  <div className="settings-info-item">
+                    <span className="settings-info-label">Business Type</span>
+                    <span className="settings-info-value">{seller?.businessType}</span>
+                  </div>
+                  <div className="settings-info-item">
+                    <span className="settings-info-label">Verification Status</span>
+                    <span className={`status-badge ${seller?.isVerified ? 'verified' : 'pending'}`}>
+                      {seller?.isVerified ? '✓ Verified' : '⏳ Pending'}
+                    </span>
+                  </div>
+                </div>
+                
                 <div className="public-url">
-                  <h5>Public Store URL</h5>
+                  <h5>🌐 Public Store URL</h5>
                   <div className="url-row">
-                      <a href={`${window.location.origin}/${seller?.storeSlug}`} target="_blank" rel="noreferrer">
-                        {`${window.location.origin}/${seller?.storeSlug}`}
+                    <a href={`${window.location.origin}/${seller?.storeSlug}`} target="_blank" rel="noreferrer">
+                      {`${window.location.origin}/${seller?.storeSlug}`}
                     </a>
                     <button
                       className="copy-btn"
                       onClick={() => {
-                          const url = `${window.location.origin}/${seller?.storeSlug}`;
+                        const url = `${window.location.origin}/${seller?.storeSlug}`;
                         try {
                           navigator.clipboard.writeText(url);
                           setMessage({ type: 'success', text: 'Store URL copied to clipboard' });
@@ -570,7 +642,7 @@ const SellerDashboard = () => {
                           setTimeout(() => setMessage({ type: '', text: '' }), 2500);
                         }
                       }}
-                    >Copy</button>
+                    >Copy Link</button>
                   </div>
                 </div>
               </div>
