@@ -199,7 +199,9 @@ const SellerDashboard = () => {
     
       <div className="dashboard-container">
         {/* Sidebar */}
-        <aside className={`dashboard-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`} style={{ position: 'fixed', left: 0, top: 0, height: '100vh', zIndex: 100 }}>
+        <aside
+          className={`dashboard-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}
+        >
           <div className="sidebar-header">
             <div className="logo-circle">S</div>
             <h2>SellerHub</h2>
@@ -213,12 +215,34 @@ const SellerDashboard = () => {
           <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
         </aside>
         {/* Sidebar Backdrop (Mobile) */}
-        {sidebarOpen && (<div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />)}
+        {/* Only show backdrop on mobile when sidebar is open */}
+        {sidebarOpen && window.innerWidth <= 600 && (
+          <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+        )}
         {/* Main Content */}
-        <div className="dashboard-main" style={{ marginLeft: 240, minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--almost-white)' }}>
+        <div
+          className="dashboard-main"
+          style={{
+            marginLeft:
+              window.innerWidth > 1024
+                ? 240
+                : 0,
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'var(--almost-white)',
+            transition: 'margin-left 0.3s',
+          }}
+        >
           <header className="dashboard-header" style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: 70, background: '#fff', borderBottom: '1px solid #eee', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <button className="hamburger-menu" onClick={() => setSidebarOpen(!sidebarOpen)} title="Toggle menu" style={{ marginRight: 16 }}>
+              {/* Hamburger only visible on mobile */}
+              <button
+                className="hamburger-menu"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                title="Toggle menu"
+                style={{ marginRight: 16, display: window.innerWidth > 600 ? 'none' : 'flex' }}
+              >
                 <span className="hamburger-line"></span>
                 <span className="hamburger-line"></span>
                 <span className="hamburger-line"></span>
@@ -227,14 +251,14 @@ const SellerDashboard = () => {
             </div>
             <div className="seller-info" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <span className="seller-name" style={{ fontWeight: 600, fontSize: 16 }}>{seller?.storeName || 'Store'}</span>
-              <span className="seller-status" style={{ color: '#1db954', fontWeight: 500, fontSize: 14 }}>Verified Seller</span>
+
             </div>
           </header>
           {message.text && (<div className={`message ${message.type}`}>{message.text}</div>)}
           <div className="dashboard-content" style={{ padding: '40px 32px', maxWidth: 1200, margin: '0 auto', width: '100%' }}>
             {activeTab === 'overview' && (
               <div>
-                <div className="stat-value">{products.length}</div>
+
                 {products.length === 0 ? (
                   <div className="empty-state">
                     <p>No products yet. Add your first product to get started!</p>
@@ -295,7 +319,27 @@ const SellerDashboard = () => {
                     <div className="form-row">
                       <div className="form-group">
                         <label>Price (₹) *</label>
-                        <input
+                        <aside
+                          className={`dashboard-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}
+                          style={{
+                            position: 'fixed',
+                            left: 0,
+                            top: 0,
+                            height: '100vh',
+                            zIndex: 100,
+                            transition: 'left 0.3s',
+                            width: 240,
+                            boxShadow: '2px 0 8px rgba(0,0,0,0.15)',
+                            background: 'linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%)',
+                            color: 'var(--pure-white)',
+                            padding: '30px 20px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            overflowY: 'auto',
+                            left: (window.innerWidth <= 1024 ? (sidebarOpen ? 0 : -240) : 0),
+                            visibility: window.innerWidth <= 1024 && !sidebarOpen ? 'hidden' : 'visible',
+                          }}
+                        
                           type="number"
                           name="price"
                           value={productFormData.price}
@@ -313,8 +357,21 @@ const SellerDashboard = () => {
                           value={productFormData.quantity}
                           onChange={handleInputChange}
                           placeholder="0"
-                          required
                         />
+                          className="dashboard-main"
+                          style={{
+                            marginLeft:
+                              window.innerWidth > 1024
+                                ? 240
+                                : 0,
+                            minHeight: '100vh',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            background: 'var(--almost-white)',
+                            transition: 'margin-left 0.3s',
+                          }}
+                        
+                        
                       </div>
                     </div>
                     <div className="form-group">
