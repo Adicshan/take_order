@@ -75,11 +75,12 @@ const Order = () => {
       const ordersBySellerMap = {};
       
       order.items.forEach(item => {
-        const itemSellerId = item.sellerId;
-        if (!ordersBySellerMap[itemSellerId]) {
-          ordersBySellerMap[itemSellerId] = [];
+        const itemSellerId = item.sellerId && item.sellerId._id ? item.sellerId._id : item.sellerId;
+        const key = String(itemSellerId);
+        if (!ordersBySellerMap[key]) {
+          ordersBySellerMap[key] = [];
         }
-        ordersBySellerMap[itemSellerId].push({
+        ordersBySellerMap[key].push({
           productId: item._id,
           productName: item.name,
           quantity: item.quantity,
@@ -152,7 +153,7 @@ const Order = () => {
                     <p>Quantity: {item.quantity}</p>
                   </div>
                   <div className="item-price">
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    <span>₹{(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 </div>
               ))}
@@ -161,15 +162,15 @@ const Order = () => {
             <div className="order-totals">
               <div className="total-row">
                 <span>Subtotal:</span>
-                <span>${order.subtotal}</span>
+                <span>₹{order.subtotal}</span>
               </div>
               <div className="total-row">
                 <span>Shipping:</span>
-                <span>{order.shipping === '0.00' ? 'FREE' : `$${order.shipping}`}</span>
+                <span>{order.shipping === '0.00' ? 'FREE' : `₹${order.shipping}`}</span>
               </div>
               <div className="total-row total">
                 <span>Total:</span>
-                <span>${order.total}</span>
+                <span>₹{order.total}</span>
               </div>
             </div>
           </div>

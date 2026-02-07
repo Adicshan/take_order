@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SellerDashboard.css';
 import { API_URL } from './config';
+import Product from './Product';
 
 const SellerDashboard = () => {
   const navigate = useNavigate();
+  // Define refs for scrollbars and table at the top of the component
+  const ordersTableTopScrollRef = useRef(null);
+  const ordersTableBottomScrollRef = useRef(null);
+  const ordersTableResponsiveRef = useRef(null);
+  const [tableScrollWidth, setTableScrollWidth] = useState(0);
+
   const [activeTab, setActiveTab] = useState('overview');
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -44,8 +51,10 @@ const SellerDashboard = () => {
         const sellerData = data.seller || data;
         setSeller(sellerData);
         // Fetch products and orders after getting seller data
-        fetchProducts();
-        fetchOrders(sellerData._id);
+        await Promise.all([
+          fetchProducts(),
+          fetchOrders(sellerData._id)
+        ]);
       }
     } catch (error) {
       console.error('Error fetching seller data:', error);
@@ -63,24 +72,35 @@ const SellerDashboard = () => {
         const data = await response.json();
         setProducts(data.products || []);
       }
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching products:', error);
+    } finally {
       setLoading(false);
     }
   };
 
   const fetchOrders = async (sellerId) => {
     try {
+      console.log('Fetching orders for seller:', sellerId);
       const response = await fetch(`${API_URL}/orders/seller/${sellerId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      console.log('Orders API response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('Orders fetched:', data.orders);
         setOrders(data.orders || []);
+      } else {
+        const err = await response.json().catch(() => ({}));
+        console.error('Orders fetch error:', err);
+        setMessage({ type: 'error', text: `Failed to load orders: ${err.error || response.statusText}` });
+        setOrders([]);
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
+      setMessage({ type: 'error', text: `Error fetching orders: ${error.message}` });
+      setOrders([]);
     }
   };
 
@@ -176,482 +196,498 @@ const SellerDashboard = () => {
   const activeProducts = products.filter(p => p.status === 'active').length;
 
   return (
-    <div className="dashboard-container">
-      {/* Sidebar */}
-      <aside className={`dashboard-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <div className="logo-circle">S</div>
-          <h2>SellerHub</h2>
-        </div>
-
-        <nav className="sidebar-nav">
-          <button
-            className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('overview');
-              setSidebarOpen(false);
-            }}
-          >
-            <span>Overview</span>
-          </button>
-          <button
-            className={`nav-item ${activeTab === 'products' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('products');
-              setSidebarOpen(false);
-            }}
-          >
-            <span>Products</span>
-          </button>
-          <button
-            className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('orders');
-              setSidebarOpen(false);
-            }}
-          >
-            <span>Orders</span>
-          </button>
-          <button
-            className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('settings');
-              setSidebarOpen(false);
-            }}
-          >
-            <span>Settings</span>
-          </button>
-        </nav>
-
-        <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
-      </aside>
-
-      {/* Sidebar Backdrop (Mobile) */}
-      {sidebarOpen && (
-        <div 
-          className="sidebar-backdrop"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Main Content */}
-      <main className="dashboard-main">
-        <header className="dashboard-header">
-          <button 
-            className="hamburger-menu"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            title="Toggle menu"
-          >
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-          </button>
-          <h1>Dashboard</h1>
-          <div className="seller-info">
-            <span className="seller-name">{seller?.storeName || 'Store'}</span>
-            <span className="seller-status">Verified Seller</span>
+    
+      <div className="dashboard-container">
+        {/* Sidebar */}
+        <aside className={`dashboard-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`} style={{ position: 'fixed', left: 0, top: 0, height: '100vh', zIndex: 100 }}>
+          <div className="sidebar-header">
+            <div className="logo-circle">S</div>
+            <h2>SellerHub</h2>
           </div>
-        </header>
-
-        {message.text && (
-          <div className={`message ${message.type}`}>
-            {message.text}
-          </div>
-        )}
-
-        <div className="dashboard-content">
-          {/* Overview Tab */}
-          {activeTab === 'overview' && (
-            <div className="overview-section">
-              <div className="stats-container">
-                <div className="stat-card">
-                  <div className="stat-label">Total Revenue</div>
-                    <div className="stat-value">₹{totalRevenue.toFixed(2)}</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-label">Total Sold</div>
-                  <div className="stat-value">{totalSold}</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-label">Active Products</div>
-                  <div className="stat-value">{activeProducts}</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-label">Total Products</div>
-                  <div className="stat-value">{products.length}</div>
-                </div>
-              </div>
-
-              {products.length === 0 ? (
-                <div className="empty-state">
-                  <p>No products yet. Add your first product to get started!</p>
-                </div>
-              ) : (
-                <div className="recent-section">
-                  <h3>Your Products</h3>
-                  <div className="products-list-simple">
-                    {products.slice(0, 5).map(product => (
-                      <div key={product._id} className="product-item">
-                        <div className="product-info-simple">
-                          <h4>{product.name}</h4>
-                          <p>₹{Number(product.price).toFixed(2)}</p>
-                        </div>
-                        <div className="product-meta">
-                          <span className="qty">Stock: {product.quantity}</span>
-                          <span className={`status ${product.status}`}>{product.status}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+          <nav className="sidebar-nav">
+            <button className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => { setActiveTab('overview'); setSidebarOpen(false); }}><span>Overview</span></button>
+            <button className={`nav-item ${activeTab === 'products' ? 'active' : ''}`} onClick={() => { setActiveTab('products'); setSidebarOpen(false); }}><span>Products</span></button>
+            <button className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => { setActiveTab('orders'); setSidebarOpen(false); }}><span>Orders</span></button>
+            <button className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => { setActiveTab('settings'); setSidebarOpen(false); }}><span>Settings</span></button>
+          </nav>
+          <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
+        </aside>
+        {/* Sidebar Backdrop (Mobile) */}
+        {sidebarOpen && (<div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />)}
+        {/* Main Content */}
+        <div className="dashboard-main" style={{ marginLeft: 240, minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--almost-white)' }}>
+          <header className="dashboard-header" style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: 70, background: '#fff', borderBottom: '1px solid #eee', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <button className="hamburger-menu" onClick={() => setSidebarOpen(!sidebarOpen)} title="Toggle menu" style={{ marginRight: 16 }}>
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+              </button>
+              <h1 style={{ fontSize: 26, fontWeight: 700, margin: 0 }}>Dashboard</h1>
             </div>
-          )}
-
-          {/* Products Tab */}
-          {activeTab === 'products' && (
-            <div className="products-section">
-              <div className="section-header">
-                <h2>Products</h2>
-                <button className="btn-primary" onClick={() => setShowAddProduct(true)}>+ Add Product</button>
-              </div>
-
-              {showAddProduct && (
-                <div className="modal-overlay" onClick={() => setShowAddProduct(false)}>
-                  <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <div className="modal-header">
-                      <h3>Add Product</h3>
-                      <button className="close-btn" onClick={() => setShowAddProduct(false)}>×</button>
-                    </div>
-                    <form onSubmit={handleAddProduct}>
-                      <div className="form-group">
-                        <label>Product Name *</label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={productFormData.name}
-                          onChange={handleInputChange}
-                          placeholder="Product name"
-                          required
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Description *</label>
-                        <textarea
-                          name="description"
-                          value={productFormData.description}
-                          onChange={handleInputChange}
-                          placeholder="Product description"
-                          rows="3"
-                          required
-                        />
-                      </div>
-
-                      <div className="form-row">
-                        <div className="form-group">
-                          <label>Price (₹) *</label>
-                          <input
-                            type="number"
-                            name="price"
-                            value={productFormData.price}
-                            onChange={handleInputChange}
-                            placeholder="0.00"
-                            step="0.01"
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Quantity *</label>
-                          <input
-                            type="number"
-                            name="quantity"
-                            value={productFormData.quantity}
-                            onChange={handleInputChange}
-                            placeholder="0"
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      <div className="form-group">
-                        <label>Category *</label>
-                        <select name="category" value={productFormData.category} onChange={handleInputChange} required>
-                          <option value="">Select Category</option>
-                          <option value="Electronics">Electronics</option>
-                          <option value="Clothing">Clothing</option>
-                          <option value="Home">Home & Garden</option>
-                          <option value="Sports">Sports & Outdoors</option>
-                          <option value="Food">Food & Beverages</option>
-                          <option value="Other">Other</option>
-                        </select>
-                      </div>
-
-                      <div className="form-group">
-                        <label>Product Image</label>
-                        <input
-                          type="file"
-                          name="image"
-                          onChange={handleImageChange}
-                          accept="image/*"
-                          placeholder="Choose product image"
-                        />
-                        {productFormData.imagePreview && (
-                          <div className="image-preview">
-                            <img src={productFormData.imagePreview} alt="Product Preview" style={{ maxWidth: '150px', maxHeight: '150px', marginTop: '10px' }} />
+            <div className="seller-info" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span className="seller-name" style={{ fontWeight: 600, fontSize: 16 }}>{seller?.storeName || 'Store'}</span>
+              <span className="seller-status" style={{ color: '#1db954', fontWeight: 500, fontSize: 14 }}>Verified Seller</span>
+            </div>
+          </header>
+          {message.text && (<div className={`message ${message.type}`}>{message.text}</div>)}
+          <div className="dashboard-content" style={{ padding: '40px 32px', maxWidth: 1200, margin: '0 auto', width: '100%' }}>
+            {activeTab === 'overview' && (
+              <div>
+                <div className="stat-value">{products.length}</div>
+                {products.length === 0 ? (
+                  <div className="empty-state">
+                    <p>No products yet. Add your first product to get started!</p>
+                  </div>
+                ) : (
+                  <div className="recent-section">
+                    <h3>Your Products</h3>
+                    <div className="products-list-simple">
+                      {products.slice(0, 5).map(product => (
+                        <div key={product._id} className="product-item">
+                          <div className="product-info-simple">
+                            <h4>{product.name}</h4>
+                            <p>₹{Number(product.price).toFixed(2)}</p>
                           </div>
-                        )}
-                      </div>
-
-                      <div className="modal-buttons">
-                        <button type="submit" className="btn-primary">Add Product</button>
-                        <button type="button" className="btn-secondary" onClick={() => setShowAddProduct(false)}>Cancel</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
-
-              {products.length === 0 ? (
-                <div className="empty-state">
-                  <p>No products added yet. Click "+ Add Product" to create your first product.</p>
-                </div>
-              ) : (
-                <div className="products-table-wrapper">
-                  <table className="products-table">
-                    <thead>
-                      <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th className="actions-header">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {products.map(product => (
-                        <tr key={product._id} className={`product-row status-${product.status}`}>
-                          <td className="product-name-cell">
-                            <div className="product-name">
-                              <span className="product-icon">📦</span>
-                              <div className="product-details">
-                                <span className="product-title">{product.name}</span>
-                                <span className="product-id">ID: {product._id.substring(0, 8)}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="product-price" style={{backgroundColor:"transparent"}}>
-                            <span className="price-value" style={{backgroundColor:"transparent",color:"black",fontSize:"15px"}}>{product.price.toFixed(2)}</span>
-                          </td>
-                          <td className="product-stock">
-                            <span className={`stock-badge ${product.quantity > 10 ? 'in-stock' : product.quantity > 0 ? 'low-stock' : 'out-of-stock'}`}>
-                              {product.quantity} units
-                            </span>
-                          </td>
-                          <td className="product-category">
-                            <span className="category-tag">{product.category}</span>
-                          </td>
-                          <td className="product-status">
-                            <span className={`status-badge ${product.status}`}>
-                              {product.status === 'active' ? '✓ Active' : '○ Inactive'}
-                            </span>
-                          </td>
-                          <td className="product-actions">
-                            <div className="action-buttons">
-                              <a 
-                                href={`/${seller?.storeSlug}/view/${product._id}`} 
-                                target="_blank" 
-                                rel="noreferrer"
-                                className="action-link view"
-                                title="View product"
-                              >
-                                View
-                              </a>
-                              <button 
-                                className="action-link copy"
-                                onClick={() => {
-                                  const url = `${window.location.origin}/${seller?.storeSlug}/view/${product._id}`;
-                                  navigator.clipboard.writeText(url);
-                                  setMessage({ type: 'success', text: 'Product URL copied!' });
-                                  setTimeout(() => setMessage({ type: '', text: '' }), 2500);
-                                }}
-                                title="Copy product URL"
-                              >
-                                Copy
-                              </button>
-                              <button 
-                                className="action-link delete"
-                                onClick={() => handleDeleteProduct(product._id)}
-                                title="Delete product"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
+                          <div className="product-meta">
+                            <span className="qty">Stock: {product.quantity}</span>
+                            <span className={`status ${product.status}`}>{product.status}</span>
+                          </div>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Orders Tab */}
-          {activeTab === 'orders' && (
-            <div className="orders-section">
-              <div className="section-header">
-                <h2>Orders</h2>
-                {orders.length > 0 && (
-                  <div className="orders-stats-mini">
-                    <span className="stat">Total: {orders.length}</span>
-                    <span className="stat">Pending: {orders.filter(o => o.status === 'pending').length}</span>
-                    <span className="stat">Confirmed: {orders.filter(o => o.status === 'confirmed').length}</span>
-                    <span className="stat">Revenue: ${orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0).toFixed(2)}</span>
+                    </div>
                   </div>
                 )}
               </div>
-
-              {orders.length === 0 ? (
-                <div className="empty-state">
-                  <p>📦 No orders yet. Your orders will appear here.</p>
+            )}
+          </div>
+      
+        {/* Products Tab */}
+        {activeTab === 'products' && (
+          <div className="products-section">
+            {showAddProduct && (
+              <div className="modal-overlay" onClick={() => setShowAddProduct(false)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <h2>Add New Product</h2>
+                  <form onSubmit={handleAddProduct}>
+                    <div className="form-group">
+                      <label>Product Name *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={productFormData.name}
+                        onChange={handleInputChange}
+                        placeholder="Product name"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Description *</label>
+                      <textarea
+                        name="description"
+                        value={productFormData.description}
+                        onChange={handleInputChange}
+                        placeholder="Product description"
+                        rows="3"
+                        required
+                      />
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Price (₹) *</label>
+                        <input
+                          type="number"
+                          name="price"
+                          value={productFormData.price}
+                          onChange={handleInputChange}
+                          placeholder="0.00"
+                          step="0.01"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Quantity *</label>
+                        <input
+                          type="number"
+                          name="quantity"
+                          value={productFormData.quantity}
+                          onChange={handleInputChange}
+                          placeholder="0"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label>Category *</label>
+                      <select name="category" value={productFormData.category} onChange={handleInputChange} required>
+                        <option value="">Select Category</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Home">Home & Garden</option>
+                        <option value="Sports">Sports & Outdoors</option>
+                        <option value="Food">Food & Beverages</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Product Image</label>
+                      <input
+                        type="file"
+                        name="image"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                        placeholder="Choose product image"
+                      />
+                      {productFormData.imagePreview && (
+                        <div className="image-preview">
+                          <img src={productFormData.imagePreview} alt="Product Preview" style={{ maxWidth: '150px', maxHeight: '150px', marginTop: '10px' }} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="modal-buttons">
+                      <button type="submit" className="btn-primary">Add Product</button>
+                      <button type="button" className="btn-secondary" onClick={() => setShowAddProduct(false)}>Cancel</button>
+                    </div>
+                  </form>
                 </div>
-              ) : (
-                <div className="orders-table-wrapper">
-                  <table className="data-table">
-                    <thead>
-                      <tr>
-                        <th>Order ID</th>
-                        <th>Order Date</th>
-                        <th>Items</th>
-                        <th>Subtotal</th>
-                        <th>Shipping</th>
-                        <th>Total</th>
-                        <th>Buyer Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orders.map(order => (
-                        <tr key={order._id} className={`order-status-${order.status || 'pending'}`}>
-                          <td className="order-id"><strong>{order.orderId || order._id.substring(0, 8)}</strong></td>
-                          <td className="order-date">{new Date(order.createdAt).toLocaleDateString()}</td>
-                          <td>
-                            <div className="order-items-cell">
-                              {order.items && order.items.length > 0 ? (
-                                order.items.map((item, i) => (
-                                  <div key={i} className="order-item">
-                                    <span className="item-name">{item.productName || 'Product'}</span>
-                                    <span className="item-qty">x{item.quantity}</span>
-                                  </div>
-                                ))
-                              ) : (
-                                <span className="no-items">N/A</span>
-                              )}
+              </div>
+            )}
+            {products.length === 0 ? (
+              <div className="empty-state">
+                <p>No products added yet. Click "+ Add Product" to create your first product.</p>
+              </div>
+            ) : (
+              <div className="products-table-wrapper">
+                <table className="products-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Stock</th>
+                      <th>Category</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map(product => (
+                      <tr key={product._id} className={`product-row status-${product.status}`}>
+                        <td className="product-name-cell">
+                          <div className="product-name">
+                            <span className="product-icon">📦</span>
+                            <div className="product-details">
+                              <span className="product-title">{product.name}</span>
+                              <span className="product-id">ID: {product._id.substring(0, 8)}</span>
                             </div>
+                          </div>
+                        </td>
+                        <td className="product-price" style={{backgroundColor:"transparent"}}>
+                          <span className="price-value" style={{backgroundColor:"transparent",color:"black",fontSize:"15px"}}>{product.price.toFixed(2)}</span>
+                        </td>
+                        <td className="product-stock">
+                          <span className={`stock-badge ${product.quantity > 10 ? 'in-stock' : product.quantity > 0 ? 'low-stock' : 'out-of-stock'}`}>
+                            {product.quantity} units
+                          </span>
+                        </td>
+                        <td className="product-category">
+                          <span className="category-tag">{product.category}</span>
+                        </td>
+                        <td className="product-status">
+                          <span className={`status-badge ${product.status}`}>
+                            {product.status === 'active' ? '✓ Active' : '○ Inactive'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+        {/* Orders Tab */}
+        {activeTab === 'orders' && (
+          <div className="orders-section">
+            <div className="orders-stats">
+              <span style={{
+                background: '#f1f3f4',
+                color: '#222',
+                fontWeight: 600,
+                fontSize: 13,
+                borderRadius: 7,
+                padding: '4px 12px',
+                letterSpacing: 0.1
+              }}>Total: {orders.length}</span>
+              <span style={{
+                background: '#f1f3f4',
+                color: '#007aff',
+                fontWeight: 600,
+                fontSize: 13,
+                borderRadius: 7,
+                padding: '4px 12px',
+                letterSpacing: 0.1
+              }}>Pending: {orders.filter(o => o.status === 'pending').length}</span>
+              <span style={{
+                background: '#f1f3f4',
+                color: '#1db954',
+                fontWeight: 600,
+                fontSize: 13,
+                borderRadius: 7,
+                padding: '4px 12px',
+                letterSpacing: 0.1
+              }}>Confirmed: {orders.filter(o => o.status === 'confirmed').length}</span>
+              <span style={{
+                background: '#f1f3f4',
+                color: '#222',
+                fontWeight: 600,
+                fontSize: 13,
+                borderRadius: 7,
+                padding: '4px 12px',
+                letterSpacing: 0.1
+              }}>Revenue: ₹{orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0).toFixed(2)}</span>
+            </div>
+            <div className="orders-table-scrollbar-top-wrapper">
+              <div
+                className="orders-table-scrollbar orders-table-scrollbar-top"
+                ref={ordersTableTopScrollRef}
+                style={{ overflowX: 'auto', overflowY: 'hidden', width: '75vw', minWidth: 600, maxWidth: '100vw', height: 16, margin: '0 auto 2px auto', background: 'transparent', WebkitOverflowScrolling: 'touch' }}
+              >
+                <div style={{ width: tableScrollWidth, height: 1 }} />
+              </div>
+              <div
+                className="orders-table-responsive"
+                ref={ordersTableResponsiveRef}
+                style={{ overflowX: 'auto' }}
+              >
+                <table className="orders-table-modern">
+                  <thead>
+                    <tr>
+                      <th>CONFIRM</th>
+                      <th>PRODUCT</th>
+                      <th>ORDER DATE</th>
+                      <th>ITEMS</th>
+                      <th>SUBTOTAL</th>
+                      <th>SHIPPING</th>
+                      <th>TOTAL</th>
+                      <th>BUYER NAME</th>
+                      <th>EMAIL</th>
+                      <th>PHONE</th>
+                      <th>ADDRESS</th>
+                      <th>STATUS</th>
+                      <th>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.map(order => {
+                      const firstItem = order.items && order.items.length > 0 ? order.items[0] : null;
+                      // Try to get imageUrl from order item, else fallback to product list
+                      let imageSrc = '';
+                      if (firstItem) {
+                        if (firstItem.imageUrl) {
+                          imageSrc = firstItem.imageUrl;
+                        } else {
+                          // Try to find the product in the products list by productId
+                          const prod = products.find(p => p._id === (firstItem.productId?._id || firstItem.productId));
+                          imageSrc = prod && prod.imageUrl ? prod.imageUrl : '';
+                        }
+                      }
+                      if (!imageSrc) {
+                        imageSrc = 'https://via.placeholder.com/40x40?text=No+Image';
+                      } else if (!imageSrc.startsWith('http')) {
+                        // Always prepend API_BASE_URL for relative paths
+                        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://take-order.onrender.com');
+                        imageSrc = `${API_BASE_URL}${imageSrc}`;
+                      }
+                      return (
+                        <tr key={order._id} className={`order-status-${order.status || 'pending'}`}>
+                          <td style={{textAlign:'center'}}>
+                            <label style={{ display: 'inline-block', position: 'relative', width: 22, height: 22, cursor: 'pointer', margin: 0 }}>
+                              <input
+                                type="checkbox"
+                                checked={order.status === 'confirmed'}
+                                onChange={async () => {
+                                  const newStatus = order.status === 'confirmed' ? 'pending' : 'confirmed';
+                                  try {
+                                    const response = await fetch(`${API_URL}/orders/update/${order._id}`, {
+                                      method: 'PUT',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                      },
+                                      body: JSON.stringify({ status: newStatus })
+                                    });
+                                    if(response.ok) {
+                                      setOrders(prevOrders => prevOrders.map(o => o._id === order._id ? { ...o, status: newStatus } : o));
+                                    }
+                                  } catch (err) {}
+                                }}
+                                style={{
+                                  opacity: 0,
+                                  width: 22,
+                                  height: 22,
+                                  margin: 0,
+                                  position: 'absolute',
+                                  left: 0,
+                                  top: 0,
+                                  cursor: 'pointer',
+                                }}
+                              />
+                              <span style={{
+                                display: 'inline-block',
+                                width: 18,
+                                height: 18,
+                                borderRadius: '50%',
+                                border: '2px solid #111',
+                                background: '#fff',
+                                boxSizing: 'border-box',
+                                position: 'relative',
+                              }}>
+                                {order.status === 'confirmed' && (
+                                  <span style={{
+                                    display: 'block',
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: '50%',
+                                    background: '#39d353',
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    border: '2px solid #fff'
+                                  }}></span>
+                                )}
+                              </span>
+                            </label>
                           </td>
-                          <td>${parseFloat(order.subtotal || 0).toFixed(2)}</td>
-                          <td>${parseFloat(order.shipping || 0).toFixed(2)}</td>
-                          <td className="order-total"><strong>${parseFloat(order.total || 0).toFixed(2)}</strong></td>
+                          <td className="order-product-img-cell">
+                            {firstItem ? (
+                              <img src={imageSrc} alt={firstItem.productName || 'Product'} className="order-product-img" width={52} height={52} style={{borderRadius:'8px',objectFit:'cover',background:'#f3f3f3'}} />
+                            ) : (
+                              <div className="order-product-img-fallback">📦</div>
+                            )}
+                          </td>
+                          <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                          <td>
+                            {order.items && order.items.length > 0 ? (
+                              order.items.map((item, i) => (
+                                <span key={i} className="order-item-table">
+                                  {item.productName || 'Product'}
+                                  <span className="order-qty-badge">x{item.quantity}</span>
+                                </span>
+                              ))
+                            ) : (
+                              <span className="no-items">N/A</span>
+                            )}
+                          </td>
+                          <td>₹{parseFloat(order.subtotal || 0).toFixed(2)}</td>
+                          <td>₹{parseFloat(order.shipping || 0).toFixed(2)}</td>
+                          <td className="order-total"><strong>₹{parseFloat(order.total || 0).toFixed(2)}</strong></td>
                           <td>{order.buyer?.fullName || 'N/A'}</td>
-                          <td className="order-email">{order.buyer?.email || 'N/A'}</td>
+                          <td>{order.buyer?.email || 'N/A'}</td>
                           <td>{order.buyer?.phone || 'N/A'}</td>
-                          <td className="order-address">
+                          <td className="order-address-cell order-address-small">
                             {order.buyer ? (
-                              <div className="address-block">
-                                <span>{order.buyer.address}</span>
-                                <span>{order.buyer.city}, {order.buyer.state} {order.buyer.zipCode}</span>
-                              </div>
+                              <span>{order.buyer.address}, {order.buyer.city}, {order.buyer.state} {order.buyer.zipCode}</span>
                             ) : (
                               <span>N/A</span>
                             )}
                           </td>
+                          <td><span className={`status-badge ${order.status || 'pending'}`}>{order.status ? order.status.toUpperCase() : 'PENDING'}</span></td>
                           <td>
-                            <div>
-                              <span className={`status-badge ${order.status || 'pending'}`}>
-                                {order.status || 'pending'}
-                              </span>
-                              {order.status === 'dispatched' && (
-                                <div style={{ marginTop: '8px', padding: '8px 12px', background: 'var(--parrot-green)', color: 'var(--pure-white)', borderRadius: '2px', fontSize: '11px', fontWeight: '600', textAlign: 'center' }}>
-                                  ✓ Done
-                                </div>
-                              )}
-                            </div>
+                            <button
+                              className="order-cancel-btn"
+                              style={{background:'#f87171',color:'#fff',border:'none',borderRadius:'6px',padding:'6px 12px',fontWeight:'bold',cursor:'pointer' }}
+                              onClick={async () => {
+                                if(window.confirm('Are you sure you want to cancel/delete this order?')) {
+                                  try {
+                                    const response = await fetch(`${API_URL}/orders/${order._id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                                    if(response.ok) {
+                                      setOrders(prevOrders => prevOrders.filter(o => o._id !== order._id));
+                                      setMessage({ type: '', text: '' });
+                                    } else {
+                                      setMessage({ type: 'error', text: 'Failed to cancel order.' });
+                                    }
+                                  } catch (err) {
+                                    setMessage({ type: 'error', text: 'Error cancelling order.' });
+                                  }
+                                }
+                              }}
+                            >Cancel</button>
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                      )})}
+                  </tbody>
+                </table>
+              </div>
+              <div
+                className="orders-table-scrollbar orders-table-scrollbar-bottom"
+                ref={ordersTableBottomScrollRef}
+                style={{ overflowX: 'auto', overflowY: 'hidden', width: '75vw', minWidth: 600, maxWidth: '100vw', height: 16, margin: '2px auto 0 auto', background: 'transparent', WebkitOverflowScrolling: 'touch' }}
+              >
+                <div style={{ width: tableScrollWidth, height: 1 }} />
+              </div>
             </div>
-          )}
-
-          {/* Settings Tab */}
-          {activeTab === 'settings' && (
-            <div className="settings-section">
-              <h2>Store Information</h2>
-              <div className="settings-card">
-                <h4>📦 Store Details</h4>
-                <div className="settings-info-grid">
-                  <div className="settings-info-item">
-                    <span className="settings-info-label">Store Name</span>
-                    <span className="settings-info-value">{seller?.storeName}</span>
-                  </div>
-                  <div className="settings-info-item">
-                    <span className="settings-info-label">Email</span>
-                    <span className="settings-info-value">{seller?.email}</span>
-                  </div>
-                  <div className="settings-info-item">
-                    <span className="settings-info-label">Phone</span>
-                    <span className="settings-info-value">{seller?.phone}</span>
-                  </div>
-                  <div className="settings-info-item">
-                    <span className="settings-info-label">Business Type</span>
-                    <span className="settings-info-value">{seller?.businessType}</span>
-                  </div>
-                  <div className="settings-info-item">
-                    <span className="settings-info-label">Verification Status</span>
-                    <span className={`status-badge ${seller?.isVerified ? 'verified' : 'pending'}`}>
-                      {seller?.isVerified ? '✓ Verified' : '⏳ Pending'}
-                    </span>
-                  </div>
+          </div>
+        )}
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className="settings-section">
+            <h2>Store Information</h2>
+            <div className="settings-card">
+              <div className="public-url">
+                <h5>🌐 Public Store URL</h5>
+                <div className="url-row">
+                  <a href={`${window.location.origin}/${seller?.storeSlug}`} target="_blank" rel="noreferrer">
+                    {`${window.location.origin}/${seller?.storeSlug}`}
+                  </a>
+                  <button
+                    className="copy-btn"
+                    onClick={() => {
+                      const url = `${window.location.origin}/${seller?.storeSlug}`;
+                      try {
+                        navigator.clipboard.writeText(url);
+                        setMessage({ type: 'success', text: 'Store URL copied to clipboard' });
+                        setTimeout(() => setMessage({ type: '', text: '' }), 2500);
+                      } catch (err) {
+                        console.error('Clipboard write failed', err);
+                        setMessage({ type: 'error', text: 'Unable to copy URL' });
+                        setTimeout(() => setMessage({ type: '', text: '' }), 2500);
+                      }
+                    }}
+                  >Copy Link</button>
                 </div>
-                
-                <div className="public-url">
-                  <h5>🌐 Public Store URL</h5>
-                  <div className="url-row">
-                    <a href={`${window.location.origin}/${seller?.storeSlug}`} target="_blank" rel="noreferrer">
-                      {`${window.location.origin}/${seller?.storeSlug}`}
-                    </a>
-                    <button
-                      className="copy-btn"
-                      onClick={() => {
-                        const url = `${window.location.origin}/${seller?.storeSlug}`;
-                        try {
-                          navigator.clipboard.writeText(url);
-                          setMessage({ type: 'success', text: 'Store URL copied to clipboard' });
-                          setTimeout(() => setMessage({ type: '', text: '' }), 2500);
-                        } catch (err) {
-                          console.error('Clipboard write failed', err);
-                          setMessage({ type: 'error', text: 'Unable to copy URL' });
-                          setTimeout(() => setMessage({ type: '', text: '' }), 2500);
-                        }
-                      }}
-                    >Copy Link</button>
-                  </div>
+              </div>
+              <h4>📦 Store Details</h4>
+              <div className="settings-info-grid">
+                <div className="settings-info-item">
+                  <span className="settings-info-label">Store Name</span>
+                  <span className="settings-info-value">{seller?.storeName}</span>
+                </div>
+                <div className="settings-info-item">
+                  <span className="settings-info-label">Email</span>
+                  <span className="settings-info-value">{seller?.email}</span>
+                </div>
+                <div className="settings-info-item">
+                  <span className="settings-info-label">Phone</span>
+                  <span className="settings-info-value">{seller?.phone}</span>
+                </div>
+                <div className="settings-info-item">
+                  <span className="settings-info-label">Business Type</span>
+                  <span className="settings-info-value">{seller?.businessType}</span>
+                </div>
+                <div className="settings-info-item">
+                  <span className="settings-info-label">Verification Status</span>
+                  <span className={`status-badge ${seller?.isVerified ? 'verified' : 'pending'}`}>
+                    {seller?.isVerified ? '✓ Verified' : '⏳ Pending'}
+                  </span>
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </main>
+          </div>
+        )}
+      </div>
+    
     </div>
-  );
+  )
 };
 
 export default SellerDashboard;

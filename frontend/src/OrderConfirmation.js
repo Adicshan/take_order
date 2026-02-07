@@ -14,16 +14,27 @@ const OrderConfirmation = () => {
       return;
     }
     setOrder(JSON.parse(lastOrder));
+    // Clear cart count after order confirmation
+    localStorage.setItem('cartCount', '0');
+    // Also clear cart array and notify listeners
+    localStorage.setItem('cart', '[]');
+    window.dispatchEvent(new Event('cartUpdated'));
   }, [navigate]);
 
   if (!order) {
     return <div className="loading">Loading order details...</div>;
   }
 
+  // Determine sellerSlug for navigation
+  let sellerSlug = order.sellerSlug;
+  if (!sellerSlug && order.items && order.items.length > 0) {
+    sellerSlug = order.items[0].sellerSlug;
+  }
+
   return (
-    <div className="confirmation-container">
-      <div className="confirmation-content">
-        <div className="success-icon">✓</div>
+    <div className="confirmation-container" style={{ background: '#eaffea', minHeight: '100vh', padding: 0 }}>
+      <div className="confirmation-content" style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 16px #d0ffd0', maxWidth: 540, margin: '0 auto', padding: 32 }}>
+        <div className="success-icon" style={{ color: '#39d353', fontSize: '3rem', background: '#eaffea', borderRadius: '50%', width: 60, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>✓</div>
         <h1>Order Confirmed!</h1>
         <p className="confirmation-message">Thank you for your purchase</p>
 
@@ -51,8 +62,8 @@ const OrderConfirmation = () => {
                 <p className="item-qty">Quantity: {item.quantity}</p>
               </div>
               <div className="item-price">
-                <p className="unit-price">${item.price.toFixed(2)}</p>
-                <p className="total-price">${(item.price * item.quantity).toFixed(2)}</p>
+                <p className="unit-price">₹{Number(item.price).toFixed(2)}</p>
+                <p className="total-price">₹{(item.price * item.quantity).toFixed(2)}</p>
               </div>
             </div>
           ))}
@@ -61,15 +72,15 @@ const OrderConfirmation = () => {
         <div className="price-breakdown">
           <div className="breakdown-item">
             <span>Subtotal:</span>
-            <span>${order.subtotal}</span>
+            <span>₹{Number(order.subtotal).toFixed(2)}</span>
           </div>
           <div className="breakdown-item">
             <span>Shipping:</span>
-            <span>{order.shipping === '0.00' ? 'FREE' : `$${order.shipping}`}</span>
+            <span>{order.shipping === '0.00' ? 'FREE' : `₹${Number(order.shipping).toFixed(2)}`}</span>
           </div>
           <div className="breakdown-total">
             <span>Total:</span>
-            <span>${order.total}</span>
+            <span>₹{Number(order.total).toFixed(2)}</span>
           </div>
         </div>
 
@@ -83,13 +94,50 @@ const OrderConfirmation = () => {
           </ul>
         </div>
 
-        <div className="action-buttons">
-          <Link to="/" className="continue-btn">
-            Continue Shopping
+        <div className="action-buttons" style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 24 }}>
+          <Link
+            to="/adicshan"
+            className="continue-btn"
+            style={{
+              background: '#39d353',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 28px',
+              fontWeight: 'bold',
+              fontSize: '1.1rem',
+              boxShadow: '0 2px 8px #eaffea',
+              textDecoration: 'none',
+              display: 'inline-block'
+            }}
+          >
+            Visit Seller Storefront
           </Link>
-          <Link to="/" className="home-btn">
-            Back to Home
-          </Link>
+          <button
+            style={{
+             
+              color: '#19ed55',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 28px',
+              fontWeight: 'bold',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px #eaffea',
+              transition: 'background 0.2s, color 0.2s'
+            }}
+            onClick={() => {
+              // Undo: restore cart and lastOrder
+              if (order) {
+                localStorage.setItem('cart', JSON.stringify(order.items.map(item => ({ ...item, id: item.productId || item._id }))));
+                localStorage.setItem('cartCount', order.items.length.toString());
+                localStorage.setItem('lastOrder', JSON.stringify(order));
+                window.dispatchEvent(new Event('cartUpdated'));
+                alert('Order undone! Cart restored.');
+                navigate('/cart');
+              }
+            }}
+          >Undo</button>
         </div>
       </div>
     </div>

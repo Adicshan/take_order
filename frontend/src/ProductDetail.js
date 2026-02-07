@@ -243,7 +243,16 @@ const ProductDetail = () => {
                       try {
                         await fetch(`${API_URL}/orders/create`, {
                           method: 'POST', headers: {'Content-Type':'application/json'},
-                          body: JSON.stringify({ sellerId: product.sellerId, items: orderObj.items, subtotal: orderObj.subtotal, tax: orderObj.tax, shipping: orderObj.shipping, total: orderObj.total, status: orderObj.status, buyer })
+                          body: JSON.stringify({
+                            sellerId: product.sellerId && product.sellerId._id ? product.sellerId._id : product.sellerId,
+                            items: orderObj.items,
+                            subtotal: orderObj.subtotal,
+                            tax: orderObj.tax,
+                            shipping: orderObj.shipping,
+                            total: orderObj.total,
+                            status: orderObj.status,
+                            buyer
+                          })
                         });
                       } catch(err){ console.log('order create error', err); }
 

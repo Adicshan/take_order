@@ -32,6 +32,9 @@
   position: fixed;
   height: 100vh;
   overflow-y: auto;
+  left: 0;
+  top: 0;
+  z-index: 100;
 }
 
 .sidebar-header {
@@ -121,17 +124,20 @@
   margin-left: 240px;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background: var(--almost-white);
 }
 
 .dashboard-header {
-  background: var(--pure-white);
-  padding: 20px 30px;
-  border-bottom: 1px solid var(--very-light-grey);
-  display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   order: -1;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 70px;
+  padding: 0 32px;
 }
 
 .hamburger-menu {
@@ -208,10 +214,13 @@
 
 .dashboard-content {
   flex: 1;
-  padding: 30px;
+  padding: 40px 32px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* Overview Section */
@@ -1671,4 +1680,3 @@
     font-size: 9px;
   }
 }
-
