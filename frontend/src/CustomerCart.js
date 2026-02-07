@@ -88,10 +88,37 @@ const CustomerCart = () => {
       // Save order to localStorage for the order page to use
       localStorage.setItem('pendingOrder', JSON.stringify(order));
 
-      // Navigate to order page with store slug or seller ID (fallbacks handled)
-      let orderLink = '/';
-      if (firstSellerSlug) orderLink = `/${firstSellerSlug}/order`;
-      else if (firstSellerId) orderLink = `/order/${firstSellerId}`;
+      // Navigate to order page with store slug or seller ID (attempt to resolve storeSlug from sellerId)
+      let orderLink = '/cart';
+      if (firstSellerSlug) {
+        orderLink = `/${firstSellerSlug}/order`;
+      } else if (firstSellerId) {
+        // try to resolve storeSlug from seller id
+        try {
+          const sellerRes = await fetch(`${API_URL}/sellers/${firstSellerId}`);
+          if (sellerRes.ok) {
+            const sellerData = await sellerRes.json();
+            const resolvedSlug = sellerData.seller?.storeSlug || sellerData.storeSlug || '';
+            if (resolvedSlug) {
+              try { localStorage.setItem('currentStoreSlug', resolvedSlug); } catch(e){}
+              orderLink = `/${resolvedSlug}/order`;
+            } else {
+              orderLink = `/order/${firstSellerId}`;
+            }
+          } else {
+            orderLink = `/order/${firstSellerId}`;
+          }
+        } catch (err) {
+          console.error('Failed to resolve seller slug:', err);
+          orderLink = `/order/${firstSellerId}`;
+        }
+      }
+      // If no seller info at all, stay on cart and show message
+      if (!orderLink || orderLink === '/') {
+        alert('Unable to determine seller for checkout. Please ensure cart items belong to a seller.');
+        setLoading(false);
+        return;
+      }
       navigate(orderLink);
     } catch (error) {
       console.error('Checkout error:', error);
@@ -104,7 +131,8 @@ const CustomerCart = () => {
   if (cartItems.length === 0) {
     const sellerId = sellerIdForLinks();
     const invalid = ['cart','order','products','marketplace','admin','seller-auth','seller-signin','seller-signup'];
-    const sellerLink = sellerId && !invalid.includes(sellerId) ? `/${sellerId}/cart` : '/';
+    // Navigate to the seller's storefront (/:storeSlug) when continuing shopping
+    const sellerLink = sellerId && !invalid.includes(sellerId) ? `/${sellerId}` : '/';
     return (
       <div className="cart-container">
         <div className="empty-cart">

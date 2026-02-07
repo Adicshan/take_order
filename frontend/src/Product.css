@@ -214,6 +214,7 @@
 }
 
 @media (max-width: 768px) {
+
   .product-card {
     grid-template-columns: 2fr;
     max-width: 100%;
@@ -222,7 +223,7 @@
   }
   .product-image {
     width: 100%;
-    height: 120px;
+    height: 10px;
   }
   .product-actions {
     gap: 6px;
@@ -242,12 +243,12 @@
 @media (max-width: 480px) {
   .product-card {
     width: 95vw;
-    height: 350px;
+    height: 70%;
     padding: 8px;
     gap: 6px;
   }
   .product-image {
-    height: 160px;
+    height: 260px;
   }
   .product-info h3 {
     font-size: 0.9rem;
