@@ -30,8 +30,6 @@ const Product = ({ product, showBuy = true }) => {
     setTimeout(() => setAdded(false), 1500);
     window.dispatchEvent(new Event('cartUpdated'));
   };
-  const isInStock = product.quantity > 0;
-  const stockPercentage = product.quantity > 10 ? 'high' : product.quantity > 0 ? 'low' : 'out';
 
   const ratingDisplay = typeof product.rating === 'number' ? product.rating.toFixed(1) : (product.rating || null);
   const reviews = product.reviewCount || product.reviews || null;
@@ -46,7 +44,7 @@ const Product = ({ product, showBuy = true }) => {
       <div className="product-image">
         {/* If image is an emoji or simple string, show it; otherwise show image */}
         {product.imageUrl ? (
-          <img src={imageSrc} alt={product.name} onError={(e) => (e.target.src = 'https://via.placeholder.com/300x300?text=No+Image')} />
+          <img src={imageSrc} alt={product.name} loading="eager" decoding="async" onError={(e) => (e.target.src = 'https://via.placeholder.com/300x300?text=No+Image')} />
         ) : (
           <div className="image-fallback">{product.image || '🛍️'}</div>
         )}
@@ -54,19 +52,19 @@ const Product = ({ product, showBuy = true }) => {
       <div className="product-info">
         <h3>{product.name}</h3>
         <p className="seller-name">{(product.seller && product.seller.name) || product.sellerName || product.seller || 'Unknown Seller'}</p>
-        <div className="rating">
+        <div className="rating" style={{display:"none"}}>
           <span className="stars">★★★★★</span>
           <span className="rating-score">{ratingDisplay || '-'}</span>
           {reviews ? <span className="reviews">({reviews})</span> : null}
         </div>
         <div className="price">
-          <span className="current">${(product.price || 0).toFixed(2)}</span>
-          {product.originalPrice ? <span className="original">${product.originalPrice}</span> : null}
+          <span className="current">₹{(product.price || 0).toFixed(2)}</span>
+          {product.originalPrice ? <span className="original">₹{Number(product.originalPrice).toFixed(2)}</span> : null}
         </div>
         <div className="product-actions">
-          <Link to={productDetailLink} className="btn btn-sm outline">View</Link>
+          <Link to={productDetailLink} className="btn btn-sm outline view-btn">View</Link>
           {showBuy && (
-            <button className="btn btn-sm primary" onClick={handleAddToCart}>Add to Cart</button>
+            <button className="btn primary" style={{color:"5px"}} onClick={handleAddToCart}>Add to Cart</button>
           )}
         </div>
         {added && <div className="added-badge">Added ✓</div>}

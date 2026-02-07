@@ -81,37 +81,16 @@ const SellerStorefront = () => {
     <div className="storefront-container">
       <div className="storefront-header">
         <div className="header-content">
-          <h1>{seller.storeName}</h1>
-          <div className="seller-meta">
-            <span className="business-type">{seller.businessType}</span>
-            <span className="seller-owner">By {seller.fullName}</span>
-            {seller.isVerified && <span className="verified-badge">✓ Verified</span>}
-          </div>
-          <p className="seller-description">Quality products from {seller.storeName}</p>
-          <div className="contact-info">
-            <p>📞 {seller.phone}</p>
-            <p>📍 {typeof seller.address === 'object' ? `${seller.address?.street}, ${seller.address?.city}, ${seller.address?.state} ${seller.address?.zipCode}` : seller.address}</p>
-          </div>
+          <h1 style={{color:"white"}} className="store-name-left">{seller.storeName}</h1>
         </div>
       </div>
 
       <div className="storefront-controls">
-        <Link to="/" className="back-link">← Back to Marketplace</Link>
-        
-        <select 
-          value={filterCategory} 
-          onChange={(e) => setFilterCategory(e.target.value)} 
-          className="category-filter"
-        >
-          <option value="all">All Products</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Home">Home & Garden</option>
-          <option value="Sports">Sports & Outdoors</option>
-          <option value="Food">Food & Beverages</option>
-          <option value="Other">Other</option>
-        </select>
+        {/* Back link and category filter removed per page-specific design request */}
       </div>
+
+      {/* Preload product images so they load fully */}
+      {products.map(p => p.imageUrl ? <link key={p._id} rel="preload" as="image" href={`${API_URL}${p.imageUrl}`} /> : null)}
 
       {filteredProducts.length === 0 ? (
         <div className="empty-state">
@@ -120,12 +99,30 @@ const SellerStorefront = () => {
       ) : (
         <div className="products-grid">
           {filteredProducts.map(product => (
-            <div key={product._id} className="product-card-wrap">
-              <Product product={product} />
-            </div>
+            <Product key={product._id} product={product} />
           ))}
         </div>
       )}
+
+      <footer className="storefront-footer">
+        <div className="footer-inner">
+          <div className="footer-left">
+            <h2 className="footer-store">{seller.storeName}</h2>
+            <div className="seller-meta-footer">
+              <span className="business-type">{seller.businessType}</span>
+              <span className="seller-owner">By {seller.fullName}</span>
+              {seller.isVerified && <span className="verified-badge">✓ Verified</span>}
+            </div>
+            <div className="contact-info footer-contact-left">
+              <p>📞 {seller.phone}</p>
+              <p>📍 {typeof seller.address === 'object' ? `${seller.address?.street}, ${seller.address?.city}, ${seller.address?.state} ${seller.address?.zipCode}` : seller.address}</p>
+            </div>
+          </div>
+            <div className="footer-right">
+              <div className="branding">Take Order</div>
+            </div>
+        </div>
+      </footer>
     </div>
   );
 };

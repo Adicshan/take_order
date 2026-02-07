@@ -148,7 +148,7 @@ const CustomerCart = () => {
                 </div>
 
                 <div className="item-price">
-                  <span>${item.price.toFixed(2)}</span>
+                  <span>₹{item.price.toFixed(2)}</span>
                 </div>
 
                 <div className="item-quantity">
@@ -162,7 +162,7 @@ const CustomerCart = () => {
                 </div>
 
                 <div className="item-total">
-                  ${(item.price * item.cartQuantity).toFixed(2)}
+                  ₹{(item.price * item.cartQuantity).toFixed(2)}
                 </div>
 
                 <button 
@@ -183,7 +183,7 @@ const CustomerCart = () => {
             
             <div className="summary-line">
               <span>Subtotal ({cartItems.length} items)</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
 
             <div className="summary-line">
@@ -192,18 +192,18 @@ const CustomerCart = () => {
                 {shipping === 0 ? (
                   <span className="free-shipping">FREE</span>
                 ) : (
-                  `$${shipping.toFixed(2)}`
+                  `₹${shipping.toFixed(2)}`
                 )}
               </span>
             </div>
 
             {shipping === 0 && (
-              <p className="shipping-note">✓ Free shipping on orders over $50</p>
+              <p className="shipping-note">✓ Free shipping on orders over ₹50</p>
             )}
 
             <div className="summary-total">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>₹{total.toFixed(2)}</span>
             </div>
 
             <button 

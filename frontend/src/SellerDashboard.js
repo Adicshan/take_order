@@ -266,7 +266,7 @@ const SellerDashboard = () => {
               <div className="stats-container">
                 <div className="stat-card">
                   <div className="stat-label">Total Revenue</div>
-                  <div className="stat-value">${totalRevenue.toFixed(2)}</div>
+                    <div className="stat-value">₹{totalRevenue.toFixed(2)}</div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-label">Total Sold</div>
@@ -294,7 +294,7 @@ const SellerDashboard = () => {
                       <div key={product._id} className="product-item">
                         <div className="product-info-simple">
                           <h4>{product.name}</h4>
-                          <p>${product.price}</p>
+                          <p>₹{Number(product.price).toFixed(2)}</p>
                         </div>
                         <div className="product-meta">
                           <span className="qty">Stock: {product.quantity}</span>
@@ -350,7 +350,7 @@ const SellerDashboard = () => {
 
                       <div className="form-row">
                         <div className="form-group">
-                          <label>Price ($) *</label>
+                          <label>Price (₹) *</label>
                           <input
                             type="number"
                             name="price"

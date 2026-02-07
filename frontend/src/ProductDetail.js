@@ -117,14 +117,11 @@ const ProductDetail = () => {
               )}
           </div>
 
-          <div className="product-rating">
-            <span className="rating-stars">★★★★★</span>
-            <span className="rating-count">{product.totalReviews} reviews</span>
-          </div>
+          {/* rating removed per design update */}
 
           <div className="product-price">
             <span className="price-label">Price:</span>
-            <span className="price-value">${product.price}</span>
+            <span className="price-value">₹{Number(product.price).toFixed(2)}</span>
           </div>
 
           <div className="product-stock">
@@ -172,7 +169,7 @@ const ProductDetail = () => {
               <div className="price-summary">
                 <div className="summary-item">
                   <span>Unit Price:</span>
-                  <span>${product.price}</span>
+                  <span>₹{Number(product.price).toFixed(2)}</span>
                 </div>
                 <div className="summary-item">
                   <span>Quantity:</span>
@@ -180,7 +177,7 @@ const ProductDetail = () => {
                 </div>
                 <div className="summary-total">
                   <span>Total:</span>
-                  <span>${total}</span>
+                  <span>₹{total}</span>
                 </div>
               </div>
 

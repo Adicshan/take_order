@@ -137,10 +137,10 @@
 
 .products-grid {
   max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px 40px;
+  margin: 25px auto;
+  padding: 0 12px 25px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
@@ -268,6 +268,16 @@
   box-shadow: 0 8px 20px rgba(10, 10, 10, 0.3);
 }
 
+/* Simplified header: store name aligned left */
+.store-name-left { 
+  font-size: 1.8rem;
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  color: var(--pure-white);
+  text-align: left;
+}
+
 .empty-state,
 .error-container,
 .loading {
@@ -276,6 +286,36 @@
   font-size: 1.1rem;
   color: var(--light-grey);
   font-family: 'Lora', serif;
+}
+
+/* Footer with seller details */
+.storefront-footer{
+  background: var(--pure-white);
+  border-top: 1px solid var(--very-light-grey);
+  padding: 28px 20px;
+}
+.storefront-footer .footer-inner{
+  max-width: 1200px;
+  margin: 0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.footer-left{ flex:1 1 480px }
+.footer-right{ width:260px; min-width:200px; display:flex; flex-direction:column; gap:12px; align-items:flex-end }
+.footer-store{ margin:0; font-size:1.25rem; font-weight:700; font-family:'Playfair Display', serif; color:var(--primary-black) }
+.seller-meta-footer{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:8px 0 }
+.seller-description{ margin:0 0 8px 0; color:var(--light-grey); font-size:0.95rem }
+.storefront-footer .contact-info{ display:flex; flex-direction:column; gap:6px; align-items:flex-end }
+.storefront-footer .contact-info p{ margin:0; color:var(--medium-grey); font-size:0.95rem }
+.branding{ font-weight:700; color:var(--medium-grey); font-size:0. NineRem; }
+
+@media (max-width:768px){
+  .footer-right{ align-items:flex-start; width:100%; }
+  .footer-left{ width:100%; }
+  .storefront-footer .contact-info{ align-items:flex-start }
 }
 
 .error-container a {
