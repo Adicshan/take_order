@@ -143,6 +143,10 @@ const SellerDashboard = () => {
       if (productFormData.imageFile) {
         formData.append('image', productFormData.imageFile);
       }
+      // Attach seller ID to product creation
+      if (seller && seller._id) {
+        formData.append('sellerId', seller._id);
+      }
 
       const response = await fetch(`${API_URL}/products/create`, {
         method: 'POST',
@@ -153,7 +157,7 @@ const SellerDashboard = () => {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setProducts([data.product, ...products]);
         setProductFormData({ name: '', description: '', price: '', quantity: '', category: '', imageFile: null, imagePreview: null });
@@ -296,6 +300,29 @@ const SellerDashboard = () => {
         {/* Products Tab */}
         {activeTab === 'products' && (
           <div className="products-section">
+            <button
+              className="add-product-btn"
+              onClick={() => setShowAddProduct(true)}
+              style={{
+                background: 'linear-gradient(90deg, #111 0%, #333 100%)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 22px',
+                fontSize: '0.7rem',
+                fontWeight: 600,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                cursor: 'pointer',
+                margin: '24px auto',
+                display: 'block',
+                letterSpacing: '0.5px',
+                transition: 'background 0.2s, box-shadow 0.2s',
+              }}
+              onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(90deg, #222 0%, #444 100%)'}
+              onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(90deg, #111 0%, #333 100%)'}
+            >
+              + Add Product
+            </button>
             {showAddProduct && (
               <div className="modal-overlay" onClick={() => setShowAddProduct(false)}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -326,27 +353,7 @@ const SellerDashboard = () => {
                     <div className="form-row">
                       <div className="form-group">
                         <label>Price (₹) *</label>
-                        <aside
-                          className={`dashboard-sidebar${sidebarOpen ? ' sidebar-open' : ''}`}
-                          style={{
-                            position: 'fixed',
-                            left: 0,
-                            top: 0,
-                            height: '100vh',
-                            zIndex: 100,
-                            transition: 'left 0.3s',
-                            width: 240,
-                            boxShadow: '2px 0 8px rgba(0,0,0,0.15)',
-                            background: 'linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%)',
-                            color: 'var(--pure-white)',
-                            padding: '30px 20px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            overflowY: 'auto',
-                            left: (window.innerWidth <= 1024 ? (sidebarOpen ? 0 : -240) : 0),
-                            visibility: window.innerWidth <= 1024 && !sidebarOpen ? 'hidden' : 'visible',
-                          }}
-                        
+                        <input
                           type="number"
                           name="price"
                           value={productFormData.price}
@@ -365,20 +372,6 @@ const SellerDashboard = () => {
                           onChange={handleInputChange}
                           placeholder="0"
                         />
-                          className="dashboard-main"
-                          style={{
-                            marginLeft:
-                              window.innerWidth > 1024
-                                ? 240
-                                : 0,
-                            minHeight: '100vh',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            background: 'var(--almost-white)',
-                            transition: 'margin-left 0.3s',
-                          }}
-                        
-                        
                       </div>
                     </div>
                     <div className="form-group">
