@@ -99,7 +99,7 @@ const OrderConfirmation = () => {
             to="/adicshan"
             className="continue-btn"
             style={{
-              background: '#39d353',
+              background: 'black',
               color: '#fff',
               border: 'none',
               borderRadius: '8px',
@@ -113,31 +113,7 @@ const OrderConfirmation = () => {
           >
             Visit Seller Storefront
           </Link>
-          <button
-            style={{
-             
-              color: '#19ed55',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 28px',
-              fontWeight: 'bold',
-              fontSize: '1.1rem',
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px #eaffea',
-              transition: 'background 0.2s, color 0.2s'
-            }}
-            onClick={() => {
-              // Undo: restore cart and lastOrder
-              if (order) {
-                localStorage.setItem('cart', JSON.stringify(order.items.map(item => ({ ...item, id: item.productId || item._id }))));
-                localStorage.setItem('cartCount', order.items.length.toString());
-                localStorage.setItem('lastOrder', JSON.stringify(order));
-                window.dispatchEvent(new Event('cartUpdated'));
-                alert('Order undone! Cart restored.');
-                navigate('/cart');
-              }
-            }}
-          >Undo</button>
+         
         </div>
       </div>
     </div>
