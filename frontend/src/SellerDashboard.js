@@ -235,13 +235,20 @@ const SellerDashboard = () => {
           }}
         >
           <header className="dashboard-header" style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: 70, background: '#fff', borderBottom: '1px solid #eee', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              {/* Hamburger only visible on mobile */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, width: '100%' }}>
+              {/* Hamburger only visible on mobile, left with margin top */}
               <button
                 className="hamburger-menu"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 title="Toggle menu"
-                style={{ marginRight: 16, display: window.innerWidth > 600 ? 'none' : 'flex' }}
+                style={{
+                  display: window.innerWidth > 600 ? 'none' : 'flex',
+                  alignSelf: 'flex-start',
+                  marginTop: 12,
+                  marginLeft: 0,
+                  marginRight: 16,
+                  position: 'relative',
+                }}
               >
                 <span className="hamburger-line"></span>
                 <span className="hamburger-line"></span>
@@ -418,6 +425,7 @@ const SellerDashboard = () => {
                 <table className="products-table">
                   <thead>
                     <tr>
+                      <th>Image</th>
                       <th>Product</th>
                       <th>Price</th>
                       <th>Stock</th>
@@ -428,9 +436,25 @@ const SellerDashboard = () => {
                   <tbody>
                     {products.map(product => (
                       <tr key={product._id} className={`product-row status-${product.status}`}>
+                        <td className="product-image-cell">
+                          {product.imageUrl || product.image ? (
+                            <img
+                              src={
+                                product.imageUrl && !product.imageUrl.startsWith('http')
+                                  ? `${process.env.REACT_APP_API_BASE_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://take-order.onrender.com')}${product.imageUrl}`
+                                  : (product.imageUrl || product.image)
+                              }
+                              alt={product.name}
+                              style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+                              onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/40x40?text=No+Image'; }}
+                            />
+                          ) : (
+                            <div style={{ width: 40, height: 40, background: '#f5f5f5', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', fontSize: 18 }}>?</div>
+                          )}
+                        </td>
                         <td className="product-name-cell">
                           <div className="product-name">
-                            <span className="product-icon">📦</span>
+                            
                             <div className="product-details">
                               <span className="product-title">{product.name}</span>
                               <span className="product-id">ID: {product._id.substring(0, 8)}</span>
@@ -438,7 +462,7 @@ const SellerDashboard = () => {
                           </div>
                         </td>
                         <td className="product-price" style={{backgroundColor:"transparent"}}>
-                          <span className="price-value" style={{backgroundColor:"transparent",color:"black",fontSize:"15px"}}>{product.price.toFixed(2)}</span>
+                          <span className="price-value" style={{backgroundColor:"transparent",color:"black",fontSize:"15px"}}>₹{product.price.toFixed(2)}</span>
                         </td>
                         <td className="product-stock">
                           <span className={`stock-badge ${product.quantity > 10 ? 'in-stock' : product.quantity > 0 ? 'low-stock' : 'out-of-stock'}`}>
@@ -452,6 +476,33 @@ const SellerDashboard = () => {
                           <span className={`status-badge ${product.status}`}>
                             {product.status === 'active' ? '✓ Active' : '○ Inactive'}
                           </span>
+                          <button
+                            className="action-link copy"
+                            style={{marginLeft:8, fontSize:11, padding:'4px 8px', border:'1px solid #d1d5db', borderRadius:3, background:'#f8f9fb', cursor:'pointer'}}
+                            title="Copy product link"
+                            onClick={() => {
+                              // Prefer storeSlug if available, else fallback to /view/:id
+                              const storeSlug = (product.seller && product.seller.storeSlug) || product.storeSlug || '';
+                              const url = storeSlug
+                                ? `${window.location.origin}/${storeSlug}/view/${product._id}`
+                                : `${window.location.origin}/view/${product._id}`;
+                              navigator.clipboard.writeText(url);
+                            }}
+                          >
+                            Copy Link
+                          </button>
+                          <button
+                            className="action-link delete"
+                            style={{marginLeft:8, fontSize:11, padding:'4px 8px', border:'1px solid #f87171', borderRadius:3, background:'#fef2f2', color:'#b91c1c', cursor:'pointer'}}
+                            title="Delete product"
+                            onClick={() => {
+                              if(window.confirm('Are you sure you want to delete this product?')) {
+                                handleDeleteProduct(product._id);
+                              }
+                            }}
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -464,32 +515,32 @@ const SellerDashboard = () => {
         {/* Orders Tab */}
         {activeTab === 'orders' && (
           <div className="orders-section">
-            <div className="orders-stats">
+            <div className="orders-stats" style={{display:'flex',gap:'12px',marginBottom:'16px'}}>
               <span style={{
                 background: '#f1f3f4',
                 color: '#222',
                 fontWeight: 600,
                 fontSize: 13,
                 borderRadius: 7,
-                padding: '4px 12px',
+                padding: '4px 10px',
                 letterSpacing: 0.1
               }}>Total: {orders.length}</span>
               <span style={{
                 background: '#f1f3f4',
-                color: '#007aff',
+                color: '#222',
                 fontWeight: 600,
                 fontSize: 13,
                 borderRadius: 7,
-                padding: '4px 12px',
+                padding: '4px 10px',
                 letterSpacing: 0.1
               }}>Pending: {orders.filter(o => o.status === 'pending').length}</span>
               <span style={{
                 background: '#f1f3f4',
-                color: '#1db954',
+                color: '#222',
                 fontWeight: 600,
                 fontSize: 13,
                 borderRadius: 7,
-                padding: '4px 12px',
+                padding: '4px 10px',
                 letterSpacing: 0.1
               }}>Confirmed: {orders.filter(o => o.status === 'confirmed').length}</span>
               <span style={{
@@ -498,7 +549,7 @@ const SellerDashboard = () => {
                 fontWeight: 600,
                 fontSize: 13,
                 borderRadius: 7,
-                padding: '4px 12px',
+                padding: '4px 10px',
                 letterSpacing: 0.1
               }}>Revenue: ₹{orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0).toFixed(2)}</span>
             </div>
