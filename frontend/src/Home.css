@@ -1,3 +1,66 @@
+.for-sellers {
+  background: #f7fafc;
+  padding: 48px 0 32px 0;
+  text-align: center;
+  color: #000;
+}
+.sellers-content {
+  max-width: 700px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(30,144,255,0.08);
+  padding: 36px 28px;
+}
+.for-sellers h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #1e90ff;
+}
+.for-sellers p {
+  font-size: 1.1rem;
+  color: #4a4a4a;
+  margin-bottom: 28px;
+}
+.seller-benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+.benefit {
+  
+  background: #f0f6ff;
+  border-radius: 12px;
+  padding: 18px 12px;
+  box-shadow: 0 1px 6px rgba(30,144,255,0.06);
+}
+.benefit h4 {
+  font-size: 1.08rem;
+  color: #1e90ff;
+  margin-bottom: 6px;
+}
+.benefit p {
+  font-size: 0.98rem;
+  color: #333;
+}
+.btn-large {
+  font-size: 1.1rem;
+  padding: 14px 32px;
+  border-radius: 24px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+@media (max-width: 700px) {
+  .sellers-content {
+    padding: 24px 8px;
+  }
+  .seller-benefits {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
 * {
   margin: 0;
   padding: 0;
@@ -52,6 +115,7 @@
   display: flex;
   align-items: center;
   gap: 30px;
+  justify-content: center;
 }
 
 .logo {
@@ -81,8 +145,8 @@
 }
 
 .search-bar {
-  flex: 1;
-  max-width: 500px;
+  flex: none;
+  max-width: 50vw;
   display: flex;
   align-items: center;
   border: 2px solid var(--almost-white);
@@ -90,6 +154,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   background: var(--almost-white);
+  margin: 0 auto;
 }
 
 .search-bar:focus-within {
@@ -134,11 +199,30 @@
 }
 
 .nav-links {
-  display: flex;
-  gap: 28px;
-  align-items: center;
-  margin-left: auto;
-}
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .seller-login-navbar-btn {
+ background: #0a0a0a;
+    color: #fff;
+    border: 2px solid #0a0a0a;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(10,10,10,0.08);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  
+  .seller-login-navbar-btn:hover {
+    
+    box-shadow: 0 4px 16px rgba(10,10,10,0.12);
+  }
+  
+
 
 .nav-links a {
   text-decoration: none;
@@ -302,12 +386,55 @@
 
 /* ====== CATEGORIES ====== */
 .categories {
-  padding: 100px 40px;
-  background: var(--pure-white);
-  border-bottom: 2px solid var(--almost-white);
+/* Hero Section Buttons */
+.hero-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.categories h2 {
+.hero-btn {
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.btn-primary.hero-btn {
+  background: linear-gradient(90deg, #4f8cff 0%, #1e90ff 100%);
+  color: #fff;
+  border: none;
+}
+.btn-primary.hero-btn:hover {
+  background: linear-gradient(90deg, #1e90ff 0%, #4f8cff 100%);
+  color: #fff;
+}
+
+.btn-outline.hero-btn {
+  background: #fff;
+  color: #1e90ff;
+  border: 2px solid #1e90ff;
+}
+.btn-outline.hero-btn:hover {
+  background: #e6f0ff;
+  color: #1e90ff;
+}
+
+@media (max-width: 600px) {
+  .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .hero-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px 0;
+  }
+}
   font-size: 40px;
   font-weight: 700;
   text-align: center;
@@ -1101,8 +1228,11 @@
   }
 
   .btn {
-    padding: 13px 20px;
+ 
+    padding: 20px 20px;
     font-size: 12px;
+    background-color: white;
+    border: 2px solid black;
   }
 
   .categories,
@@ -1153,4 +1283,7 @@
   .footer-section h4 {
     font-size: 12px;
   }
+   .seller-login-navbar-btn {
+    display: none;
+   }
 }

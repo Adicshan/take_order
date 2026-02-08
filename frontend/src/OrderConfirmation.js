@@ -111,7 +111,7 @@ const OrderConfirmation = () => {
               display: 'inline-block'
             }}
           >
-            Visit Seller Storefront
+            Home
           </Link>
          
         </div>

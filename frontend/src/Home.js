@@ -23,11 +23,7 @@ function Home() {
             <button>Search</button>
           </div>
           <div className="nav-links">
-            <Link to="/">Home</Link>
-         {/* <Link to="/products">Browse Products</Link>*/}
-            <Link to="/marketplace">Sellers</Link>
-            <Link to="/seller-signin" className="seller-link">Sell</Link>
-            <Link to="/cart" className="cart-link">🛒 Cart</Link>
+            <button className="seller-login-navbar-btn" onClick={() => window.location.href='/seller-signin'}>Seller Login</button>
           </div>
         </div>
       </nav>
@@ -38,8 +34,8 @@ function Home() {
           <h1>Discover Quality Products from Trusted Sellers</h1>
           <p>Shop from thousands of verified sellers. Buy with confidence, sell with ease.</p>
           <div className="hero-buttons">
-            <Link to="/products" className="btn btn-primary">Shop Now</Link>
-            <Link to="/seller-signin" className="btn btn-secondary">Become a Seller</Link>
+            <Link to="/products" style={{fontSize:"12px"}} className="btn btn-primary hero-btn">Shop Now</Link>
+            <Link to="/seller-signin" style={{fontSize:"12px",color:"black"}} className="btn hero-btn btn-outline">Become a Seller</Link>
           </div>
         </div>
       </section>
@@ -51,7 +47,7 @@ function Home() {
           {categories.map((cat, idx) => (
             <div key={idx} className="category-card">
               <h3>{cat.name}</h3>
-              <p>{cat.count}</p>
+             
             </div>
           ))}
         </div>
@@ -90,46 +86,27 @@ function Home() {
           <h2>Start Selling on MarketPlace</h2>
           <p>Join thousands of successful sellers. Reach millions of customers worldwide.</p>
           <div className="seller-benefits">
-            <div className="benefit">
+            <div className="benefit" style={{color:'black'}}>
               <h4>Easy Setup</h4>
-              <p>Create your store in minutes with no technical knowledge required.</p>
+              <p style={{color:"black"}}>Create your store in minutes with no technical knowledge required.</p>
             </div>
             <div className="benefit">
               <h4>Low Fees</h4>
-              <p>Keep more of your profits with our competitive commission rates.</p>
+              <p style={{color:"black"}}>Keep more of your profits with our competitive commission rates.</p>
             </div>
             <div className="benefit">
               <h4>Analytics</h4>
-              <p>Track sales, inventory, and customer feedback in real-time.</p>
+              <p style={{color:"black"}}>Track sales, inventory, and customer feedback in real-time.</p>
             </div>
             <div className="benefit">
               <h4>Support</h4>
-              <p>24/7 customer support team ready to help your business grow.</p>
+              <p style={{color:"black"}}>24/7 customer support team ready to help your business grow.</p>
             </div>
           </div>
           <Link to="/seller-signup" className="btn btn-primary btn-large">Become a Seller</Link>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="stats">
-        <div className="stat">
-          <h3>50K+</h3>
-          <p>Active Sellers</p>
-        </div>
-        <div className="stat">
-          <h3>500K+</h3>
-          <p>Products Listed</p>
-        </div>
-        <div className="stat">
-          <h3>2M+</h3>
-          <p>Happy Customers</p>
-        </div>
-        <div className="stat">
-          <h3>99.2%</h3>
-          <p>Satisfaction Rate</p>
-        </div>
-      </section>
 
       {/* Trust Section */}
       <section className="trust">
