@@ -19,6 +19,7 @@ import CartFloating from './CartFloating';
 import ProductToStore from './Redirects/ProductToStore';
 import SellerToStore from './Redirects/SellerToStore';
 
+
 function App() {
   return (
     <Router>
