@@ -20,7 +20,7 @@ function Home() {
           <div className="logo">BlackCart</div>
           <div className="search-bar">
             <input type="text" placeholder="Search products, sellers..." />
-            <button><Link to="/products" style={{color:"white",fontSize:"12px"}}  className="btn">Search</Link></button>
+            <button>Search</button>
           </div>
           <div className="nav-links">
             <button className="seller-login-navbar-btn" onClick={() => window.location.href='/seller-signin'}>Seller Login</button>
@@ -135,7 +135,7 @@ function Home() {
       <section className="final-cta">
         <h2>Start Shopping Today</h2>
         <p>Discover amazing products from sellers you can trust</p>
-        <Link to="/products" className="btn btn-primary btn-large">Browse Products</Link>
+      <button className="btn btn-primary btn-large"> <Link to="/products" >Browse Products</Link></button>
       </section>
 
       {/* Footer */}
@@ -178,7 +178,7 @@ function Home() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 BlackCart. All rights reserved. | Connecting buyers and sellers worldwide</p>
+          <p>&copy; 2026 MarketPlace. All rights reserved. | Connecting buyers and sellers worldwide</p>
         </div>
       </footer>
     </div>

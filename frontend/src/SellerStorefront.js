@@ -69,12 +69,8 @@ const SellerStorefront = () => {
   }
 
   if (!seller) {
-    return (
-      <div className="error-container">
-        <p>Seller not found</p>
-        <Link to="/">Back to BlackCart</Link>
-      </div>
-    );
+    // If seller not found, render nothing (or you can return null or a minimal message if desired)
+    return null;
   }
 
   return (

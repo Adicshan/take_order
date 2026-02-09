@@ -1041,10 +1041,7 @@
   box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
 }
 
-.final-cta .btn-primary:hover {
-  background: var(--almost-white);
-  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
-}
+
 
 /* ====== FOOTER ====== */
 .footer {
