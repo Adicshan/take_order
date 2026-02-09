@@ -4,6 +4,8 @@ import Home from './Home';
 import SellerAuth from './SellerAuth';
 import SellerSignIn from './SellerSignIn';
 import SellerSignUp from './SellerSignUp';
+import SellerResetPassword from './SellerResetPassword';
+import SellerSetNewPassword from './SellerSetNewPassword';
 import SellerDashboard from './SellerDashboard';
 import AllProducts from './AllProducts';
 import CustomerMarketplace from './CustomerMarketplace';
@@ -20,7 +22,7 @@ import SellerToStore from './Redirects/SellerToStore';
 function App() {
   return (
     <Router>
-      <CartFloating />
+      {/* Show CartFloating only on allowed pages */}
       <Routes>
         <Route path="/" element={<Home />} />
         
@@ -29,9 +31,20 @@ function App() {
         <Route path="/seller-signin" element={<SellerSignIn />} />
         <Route path="/seller-signup" element={<SellerSignUp />} />
         <Route path="/seller-dashboard" element={<SellerDashboard />} />
+        <Route path="/seller-reset-password" element={<SellerResetPassword />} />
+        <Route path="/seller-set-password" element={<SellerSetNewPassword />} />
         
         {/* Customer Routes */}
         <Route path="/products" element={<AllProducts />} />
+      </Routes>
+      {/* CartFloating only on non-auth pages */}
+      {(() => {
+        const path = window.location.pathname;
+        // Hide on seller password reset page
+        if (path === '/seller-reset-password') return null;
+        return <CartFloating />;
+      })()}
+      <Routes>
         <Route path="/marketplace" element={<CustomerMarketplace />} />
         
         {/* Shop routes - by storeSlug (main route) */}

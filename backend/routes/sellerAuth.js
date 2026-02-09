@@ -3,6 +3,8 @@ const router = express.Router();
 const Seller = require('../models/Seller');
 const slugify = require('slugify');
 const jwt = require('jwt-simple');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
@@ -10,6 +12,67 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 const generateToken = (sellerId) => {
   return jwt.encode({ sellerId, iat: Date.now() }, JWT_SECRET);
 };
+
+// POST /api/seller-auth/forgot-password
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  const seller = await Seller.findOne({ email });
+  if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+  // Generate token
+  const token = crypto.randomBytes(32).toString('hex');
+  seller.resetToken = token;
+  seller.resetTokenExpires = Date.now() + 3600000; // 1 hour
+  await seller.save();
+
+  // Send email using your company Gmail
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'rk8816616@gmail.com',
+      pass: 'ooowvqsximrdmcex' // Use an App Password, not your main Gmail password!
+    },
+  tls: {
+    rejectUnauthorized: false
+  }
+  });
+
+  const resetUrl = `http://localhost:3000/seller-set-password?token=${token}`;
+  const mailOptions = {
+    to: seller.email,
+    subject: 'Reset your BlackCart password',
+    html: `<p>Click <a href="${resetUrl}">here</a> to reset your password. This link is valid for 1 hour.</p>`
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  res.json({ message: 'Reset email sent' });
+});
+
+// POST /api/seller-auth/reset-password
+router.post('/reset-password', async (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) {
+    return res.status(400).json({ message: 'Token and new password are required.' });
+  }
+  try {
+    const seller = await Seller.findOne({
+      resetToken: token,
+      resetTokenExpires: { $gt: Date.now() }
+    });
+    if (!seller) {
+      return res.status(400).json({ message: 'Invalid or expired token.' });
+    }
+    seller.password = password;
+    seller.resetToken = undefined;
+    seller.resetTokenExpires = undefined;
+    await seller.save();
+    res.json({ message: 'Password has been reset successfully.' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ message: 'Server error. Please try again.' });
+  }
+});
 
 // @route   POST /api/seller-auth/register
 // @desc    Register a new seller

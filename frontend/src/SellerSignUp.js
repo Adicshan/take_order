@@ -153,7 +153,7 @@ const SellerSignUp = () => {
     <div className="auth-container signup">
       <div className="auth-left">
         <div className="auth-brand">
-          <h1>📦 SellerHub</h1>
+          <h1>BlackCart</h1>
           <p>Start Selling Today</p>
         </div>
         <div className="auth-benefits">

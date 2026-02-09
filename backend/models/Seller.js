@@ -103,6 +103,10 @@ const sellerSchema = new mongoose.Schema({
     default: 0
   },
 
+  // Password Reset
+  resetToken: String,
+  resetTokenExpires: Date,
+
   // Account Status
   isActive: {
     type: Boolean,

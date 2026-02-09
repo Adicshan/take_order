@@ -55,7 +55,7 @@ const SellerSignIn = () => {
     <div className="auth-container">
       <div className="auth-left">
         <div className="auth-brand">
-          <h1>📦 SellerHub</h1>
+          <h1>BlackCart</h1>
           <p>Grow Your Business Online</p>
         </div>
         <div className="auth-benefits">
@@ -119,7 +119,7 @@ const SellerSignIn = () => {
               </div>
             </div>
 
-            <Link to="#" className="forgot-link">Forgot your password?</Link>
+            <Link to="/seller-reset-password" className="forgot-link">Forgot your password?</Link>
 
             <button type="submit" className="btn-submit" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}

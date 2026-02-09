@@ -208,7 +208,7 @@ const SellerDashboard = () => {
         >
           <div className="sidebar-header">
             <div className="logo-circle">S</div>
-            <h2>SellerHub</h2>
+            <h2>BlackCart</h2>
           </div>
           <nav className="sidebar-nav">
             <button className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => { setActiveTab('overview'); setSidebarOpen(false); }}><span>Overview</span></button>
