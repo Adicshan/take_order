@@ -187,7 +187,7 @@ function SellerAuth() {
   return (
     <div className="seller-auth-container">
       <nav className="auth-navbar">
-        <div className="auth-logo">MarketPlace Seller</div>
+        <div className="auth-logo">BlackCart Seller</div>
       </nav>
 
       <div className="auth-content">
@@ -389,7 +389,7 @@ function SellerAuth() {
                   <>
                     <div className="verification-notice">
                       <h4>Identity Verification Required</h4>
-                      <p>We need to verify your identity to keep our marketplace safe and secure.</p>
+                      <p>We need to verify your identity to keep BlackCart safe and secure.</p>
                     </div>
 
                     <div className="form-group">
@@ -464,7 +464,7 @@ function SellerAuth() {
         </div>
 
         <div className="auth-info">
-          <h3>Why Sell on MarketPlace?</h3>
+          <h3>Why Sell on BlackCart?</h3>
           <ul>
             <li>✓ Reach millions of customers</li>
             <li>✓ Easy product management</li>

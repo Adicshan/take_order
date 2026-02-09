@@ -1,5 +1,5 @@
 {
-  "name": "take_order",
+  "name": "blackcart",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

@@ -38,7 +38,7 @@ const CustomerMarketplace = () => {
     <div className="marketplace-container">
       <header className="marketplace-header">
         <div className="header-content">
-          <h1>📦 Marketplace</h1>
+          <h1>🛒 BlackCart</h1>
           <p>Discover products from trusted sellers</p>
         </div>
       </header>

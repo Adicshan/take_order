@@ -17,7 +17,7 @@ function Home() {
       {/* Navbar */}
       <nav className="navbar">
         <div className="nav-content">
-          <div className="logo">MarketPlace</div>
+          <div className="logo">BlackCart</div>
           <div className="search-bar">
             <input type="text" placeholder="Search products, sellers..." />
             <button>Search</button>
@@ -83,7 +83,7 @@ function Home() {
       {/* For Sellers */}
       <section className="for-sellers">
         <div className="sellers-content">
-          <h2>Start Selling on MarketPlace</h2>
+          <h2>Start Selling on BlackCart</h2>
           <p>Join thousands of successful sellers. Reach millions of customers worldwide.</p>
           <div className="seller-benefits">
             <div className="benefit" style={{color:'black'}}>
@@ -178,7 +178,7 @@ function Home() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 MarketPlace. All rights reserved. | Connecting buyers and sellers worldwide</p>
+          <p>&copy; 2026 BlackCart. All rights reserved. | Connecting buyers and sellers worldwide</p>
         </div>
       </footer>
     </div>

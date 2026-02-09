@@ -72,7 +72,7 @@ const SellerStorefront = () => {
     return (
       <div className="error-container">
         <p>Seller not found</p>
-        <Link to="/">Back to Marketplace</Link>
+        <Link to="/">Back to BlackCart</Link>
       </div>
     );
   }
@@ -119,7 +119,7 @@ const SellerStorefront = () => {
             </div>
           </div>
             <div className="footer-right">
-              <div className="branding">Take Order</div>
+              <div className="branding">BlackCart</div>
             </div>
         </div>
       </footer>
