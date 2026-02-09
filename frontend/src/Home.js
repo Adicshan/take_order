@@ -20,7 +20,7 @@ function Home() {
           <div className="logo">BlackCart</div>
           <div className="search-bar">
             <input type="text" placeholder="Search products, sellers..." />
-            <button>Search</button>
+            <button><Link to="/products" style={{color:"white",fontSize:"12px"}}  className="btn">Search</Link></button>
           </div>
           <div className="nav-links">
             <button className="seller-login-navbar-btn" onClick={() => window.location.href='/seller-signin'}>Seller Login</button>
