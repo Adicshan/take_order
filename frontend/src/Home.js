@@ -1,7 +1,9 @@
 import './Home.css';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+  const navigate = useNavigate();
 
   const categories = [
     { name: 'Electronics', count: '2,543 products' },
@@ -20,7 +22,7 @@ function Home() {
           <div className="logo">BlackCart</div>
           <div className="search-bar">
             <input type="text" placeholder="Search products, sellers..." />
-            <button>Search</button>
+            <button onClick={()=> navigate('/products')}>Search</button>
           </div>
           <div className="nav-links">
             <button className="seller-login-navbar-btn" onClick={() => window.location.href='/seller-signin'}>Seller Login</button>
