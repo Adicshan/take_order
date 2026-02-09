@@ -313,7 +313,7 @@ const SellerDashboard = () => {
                 fontWeight: 600,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                 cursor: 'pointer',
-                margin: '24px auto',
+                margin: '2px auto',
                 display: 'block',
                 letterSpacing: '0.5px',
                 transition: 'background 0.2s, box-shadow 0.2s',
@@ -731,7 +731,7 @@ const SellerDashboard = () => {
         )}
         {/* Settings Tab */}
         {activeTab === 'settings' && (
-          <div className="settings-section">
+          <div className="settings-section" style={{top:"10px"}}>
             <h2>Store Information</h2>
             <div className="settings-card">
               <div className="public-url">
