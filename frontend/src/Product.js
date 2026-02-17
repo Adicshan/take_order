@@ -5,7 +5,7 @@ import { API_BASE_URL } from './config';
 
 const API_BASE = API_BASE_URL;
 
-// Reusable product card for lists/grid
+
 const Product = ({ product, showBuy = true }) => {
   const [added, setAdded] = useState(false);
   const imageSrc = product.imageUrl ? `${API_BASE}${product.imageUrl}` : 'https://via.placeholder.com/300x300?text=No+Image';
@@ -19,10 +19,10 @@ const Product = ({ product, showBuy = true }) => {
       cart.push({ ...product, cartQuantity: 1 });
     }
     localStorage.setItem('cart', JSON.stringify(cart));
-    // remember last seller viewed/added for cart navigation
+
     try { 
       localStorage.setItem('currentSeller', product.sellerId || (product.seller && product.seller._id) || product.seller || '');
-      // Also store the seller's storeSlug if available
+   
       const storeSlug = (product.seller && product.seller.storeSlug) || '';
       if (storeSlug) localStorage.setItem('currentStoreSlug', storeSlug);
     } catch(e){}
@@ -34,9 +34,9 @@ const Product = ({ product, showBuy = true }) => {
   const ratingDisplay = typeof product.rating === 'number' ? product.rating.toFixed(1) : (product.rating || null);
   const reviews = product.reviewCount || product.reviews || null;
 
-  // Get storeSlug for URL generation
+
   const storeSlug = (product.seller && product.seller.storeSlug) || '';
-  // Use /:storeSlug/view/:productId as the human-friendly product link (alias of /:storeSlug/product/:productId)
+  
   const productDetailLink = storeSlug ? `/${storeSlug}/view/${product._id}` : `/view/${product._id}`;
 
   return (

@@ -37,7 +37,7 @@ function Home() {
           <p>Shop from thousands of verified sellers. Buy with confidence, sell with ease.</p>
           <div className="hero-buttons">
             <Link to="/products" style={{fontSize:"12px"}} className="btn btn-primary hero-btn">Shop Now</Link>
-            <Link to="/seller-signin" style={{fontSize:"12px",color:"black"}} className="btn hero-btn btn-outline">Become a Seller</Link>
+            <Link to="/seller-signup" style={{fontSize:"12px",color:"black"}} className="btn hero-btn btn-outline">Become a Seller</Link>
           </div>
         </div>
       </section>
