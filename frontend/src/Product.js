@@ -8,7 +8,10 @@ const API_BASE = API_BASE_URL;
 
 const Product = ({ product, showBuy = true }) => {
   const [added, setAdded] = useState(false);
-  const imageSrc = product.imageUrl ? `${API_BASE}${product.imageUrl}` : 'https://via.placeholder.com/300x300?text=No+Image';
+  let imageSrc = 'https://via.placeholder.com/300x300?text=No+Image';
+  if (product.imageUrl) {
+    imageSrc = product.imageUrl.startsWith('http') ? product.imageUrl : `${API_BASE}${product.imageUrl}`;
+  }
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');

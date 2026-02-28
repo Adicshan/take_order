@@ -30,8 +30,9 @@ const CartFloating = () => {
   const excludedTopLevel = ['products','marketplace','admin','seller-auth','seller-signin','seller-signup','seller-dashboard','cart','order','product','view','public'];
   const isStorefront = parts.length === 1 && parts[0] && !excludedTopLevel.includes(parts[0]);
   const isProductView = path.includes('/view/') || path.includes('/product/');
+  const isOrderConfirmation = path.includes('/order-confirmation');
 
-  const show = isStorefront || isProductView;
+  const show = (isStorefront || isProductView) && !isOrderConfirmation;
   if (!show) return null;
 
   // Extract storeSlug from first part of URL if it's not an excluded route

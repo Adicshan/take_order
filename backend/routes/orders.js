@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const Seller = require('../models/Seller');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 
 // Create order
 router.post('/create', async (req, res) => {
@@ -15,7 +17,6 @@ router.post('/create', async (req, res) => {
     // Normalize sellerId: accept either a plain id or an object containing _id/id
     let resolvedSellerId = sellerId;
     if (sellerId && typeof sellerId === 'object') {
-      // Common shapes: { _id: '...', id: '...' } or a populated seller object
       if (sellerId._id) resolvedSellerId = sellerId._id;
       else if (sellerId.id) resolvedSellerId = sellerId.id;
       else if (sellerId.toString) resolvedSellerId = sellerId.toString();
@@ -43,6 +44,70 @@ router.post('/create', async (req, res) => {
     });
 
     await order.save();
+
+    // Send email notification to seller and user
+    // Setup nodemailer transporter (Gmail example, use app password for security)
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.NOTIFY_EMAIL || 'yourgmail@gmail.com',
+        pass: process.env.NOTIFY_EMAIL_PASS || 'your_app_password'
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    // Get seller email
+    const seller = await Seller.findById(resolvedSellerId);
+    const sellerEmail = seller?.email;
+    const userEmail = buyer?.email;
+
+    // Build order details
+    const orderDate = new Date(order.createdAt).toLocaleString();
+    let itemsHtml = '';
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    order.items.forEach(item => {
+      // Try to build a product link using storeSlug and productId if available
+      let productLink = '#';
+      if (item.productId && seller && seller.storeSlug) {
+        productLink = `${baseUrl}/${seller.storeSlug}/view/${item.productId}`;
+      }
+      itemsHtml += `<li>${item.productName} (Qty: ${item.quantity}) - ₹${item.price} <br/><a href="${productLink}" target="_blank">Click here to view product</a></li>`;
+    });
+
+    const orderDetailsHtml = `
+      <h2>Order Details</h2>
+      <p><strong>Order ID:</strong> ${order.orderId}</p>
+      <p><strong>Date:</strong> ${orderDate}</p>
+      <p><strong>Buyer Name:</strong> ${order.buyer.fullName || 'N/A'}</p>
+      <p><strong>Phone:</strong> ${order.buyer.phone || 'N/A'}</p>
+      <p><strong>Address:</strong> ${order.buyer.address || 'N/A'}, ${order.buyer.city || ''}, ${order.buyer.state || ''}, ${order.buyer.zipCode || ''}</p>
+      <ul>${itemsHtml}</ul>
+      <p><strong>Subtotal:</strong> ₹${order.subtotal}</p>
+      <p><strong>Shipping:</strong> ₹${order.shipping}</p>
+      <p><strong>Total:</strong> ₹${order.total}</p>
+    `;
+
+    // Send to seller
+    if (sellerEmail) {
+      await transporter.sendMail({
+        from: process.env.NOTIFY_EMAIL || 'yourgmail@gmail.com',
+        to: sellerEmail,
+        subject: `New Order Received - ${order.orderId}`,
+        html: `<p>You have received a new order:</p>${orderDetailsHtml}`
+      });
+    }
+
+    // Send to user
+    if (userEmail) {
+      await transporter.sendMail({
+        from: process.env.NOTIFY_EMAIL || 'yourgmail@gmail.com',
+        to: userEmail,
+        subject: `Order Confirmation - ${order.orderId}`,
+        html: `<p>Thank you for your order! Here are your order details:</p>${orderDetailsHtml}`
+      });
+    }
 
     res.status(201).json({
       message: 'Order created successfully',

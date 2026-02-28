@@ -34,9 +34,9 @@ const Order = () => {
     const newErrors = {};
     
     if (!formData.fullName.trim()) newErrors.fullName = 'Full name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email address';
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email address';
     if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    else if (!/^\d{10}$/.test(formData.phone.trim())) newErrors.phone = 'Phone number must be 10 digits';
     if (!formData.address.trim()) newErrors.address = 'Address is required';
     if (!formData.city.trim()) newErrors.city = 'City is required';
     if (!formData.state.trim()) newErrors.state = 'State is required';
@@ -194,7 +194,7 @@ const Order = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Email *</label>
+                  <label>Email (optional)</label>
                   <input
                     type="email"
                     name="email"
@@ -287,8 +287,14 @@ const Order = () => {
                   type="submit" 
                   className="submit-btn"
                   disabled={submitting}
+                  style={submitting ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
                 >
-                  {submitting ? 'Processing...' : 'Confirm & Place Order'}
+                  {submitting ? (
+                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                      <span className="spinner" style={{ width: 18, height: 18, border: '3px solid #fff', borderTop: '3px solid #39d353', borderRadius: '50%', animation: 'spin 1s linear infinite', display: 'inline-block' }}></span>
+                      Processing...
+                    </span>
+                  ) : 'Confirm & Place Order'}
                 </button>
               </div>
             </form>

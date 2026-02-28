@@ -29,12 +29,12 @@ router.post('/forgot-password', async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: 'rk8816616@gmail.com',
-      pass: 'ooowvqsximrdmcex' // Use an App Password, not your main Gmail password!
+      user: process.env.NOTIFY_EMAIL,
+      pass: process.env.NOTIFY_EMAIL_PASS // Use an App Password, not your main Gmail password!
     },
-  tls: {
-    rejectUnauthorized: false
-  }
+    tls: {
+      rejectUnauthorized: false
+    }
   });
 
   const resetUrl = `http://localhost:3000/seller-set-password?token=${token}`;

@@ -1,31 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 const Product = require('../models/Product');
 const Seller = require('../models/Seller');
 const jwt = require('jwt-simple');
 const fs = require('fs');
 const path = require('path');
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'product-' + uniqueSuffix + path.extname(file.originalname));
-  }
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'dkqjagksx',
+  api_key: '923462844941772',
+  api_secret: 'rpqgNH_PizZojERGP8-fU7J20tw'
 });
 
+// Configure multer for memory storage
 const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -60,34 +53,49 @@ router.post('/create', verifySeller, upload.single('image'), async (req, res) =>
     const { name, description, price, quantity, category } = req.body;
 
     if (!name || !description || !price || !quantity || !category) {
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(400).json({ message: 'All fields are required' });
     }
 
     let imageUrl = null;
     if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
+      // Upload image buffer to Cloudinary
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: 'products' },
+        async (error, result) => {
+          if (error) {
+            return res.status(500).json({ message: 'Cloudinary upload error', error: error.message });
+          }
+          imageUrl = result.secure_url;
+          const product = new Product({
+            sellerId: req.seller._id,
+            name,
+            description,
+            price: parseFloat(price),
+            quantity: parseInt(quantity),
+            category,
+            imageUrl: imageUrl,
+            status: 'active'
+          });
+          await product.save();
+          return res.status(201).json({ message: 'Product created successfully', product });
+        }
+      );
+      streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+    } else {
+      const product = new Product({
+        sellerId: req.seller._id,
+        name,
+        description,
+        price: parseFloat(price),
+        quantity: parseInt(quantity),
+        category,
+        imageUrl: null,
+        status: 'active'
+      });
+      await product.save();
+      return res.status(201).json({ message: 'Product created successfully', product });
     }
-
-    const product = new Product({
-      sellerId: req.seller._id,
-      name,
-      description,
-      price: parseFloat(price),
-      quantity: parseInt(quantity),
-      category,
-      imageUrl: imageUrl,
-      status: 'active'
-    });
-
-    await product.save();
-    res.status(201).json({ message: 'Product created successfully', product });
   } catch (error) {
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
-    }
     console.error('Error creating product:', error);
     res.status(500).json({ message: 'Error creating product', error: error.message });
   }

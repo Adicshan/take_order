@@ -161,7 +161,7 @@ const CustomerCart = () => {
                 <div className="item-image">
                   {item.imageUrl ? (
                     <img 
-                      src={`${API_URL.split('/api')[0]}${item.imageUrl}`}
+                      src={item.imageUrl.startsWith('http') ? item.imageUrl : `${API_URL.split('/api')[0]}${item.imageUrl}`}
                       alt={item.name}
                       onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/100x100?text=No+Image';

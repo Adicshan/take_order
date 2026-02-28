@@ -95,7 +95,7 @@ const ProductDetail = () => {
         <div className="product-images">
           {product.imageUrl ? (
             <img 
-              src={`${API_URL.split('/api')[0]}${product.imageUrl}`}
+              src={product.imageUrl.startsWith('http') ? product.imageUrl : `${API_URL.split('/api')[0]}${product.imageUrl}`}
               alt={product.name}
               onError={(e) => {
                 e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
