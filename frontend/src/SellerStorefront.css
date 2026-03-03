@@ -1,3 +1,150 @@
+/* WhatsApp contact in header */
+.whatsapp-contact {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  margin-left: 12px;
+}
+/* Footer info list small font */
+.footer-info-list {
+  font-size: 0.92rem;
+  color: #fff;
+  margin: 0;
+  padding-left: 18px;
+}
+.footer-info-list li {
+  margin-bottom: 7px;
+  color: #fff;
+}
+/* Why Shop with Us Section */
+.why-shop-section {
+  background: #f7f7f7;
+  padding: 56px 32px 48px 32px;
+  margin: 0 0 32px 0;
+  width: 100%;
+}
+.why-shop-title {
+  text-align: center;
+  font-size: 2.8rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  margin-bottom: 48px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.why-shop-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  
+}
+.why-shop-feature{
+  border: solid 1.3px black;
+  padding: 5px;
+}
+@media (max-width: 900px) {
+  .why-shop-section {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+@media (max-width: 900px) {
+  .why-shop-features {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 70px auto 0 auto;
+    padding: 0 20px 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 28px 18px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.why-shop-feature:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  transform: translateY(-4px) scale(1.02);
+  border: solid 3px black;;
+}
+
+.why-shop-feature h3 {
+  font-size: 1.35rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+.why-shop-feature p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+  
+}
+}
+/* Seller Footer Redesign */
+.seller-footer {
+  background: #111;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 48px 0 0 0;
+  margin-top: 48px;
+  border-top: 1px solid #222;
+}
+.seller-footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.seller-footer-section {
+  flex: 1;
+  min-width: 220px;
+}
+.seller-footer-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+}
+.seller-footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.seller-footer-section li {
+  font-size: 0.85rem;
+  color: #bbb;
+  margin-bottom: 16px;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+.seller-footer-section li:hover {
+  color: #fff;
+}
+.seller-footer-bottom {
+  text-align: center;
+  color: #bbb;
+  font-size: 0.92rem;
+  padding: 32px 0 18px 0;
+  border-top: 1px solid #222;
+  margin-top: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 .storefront-container {
   min-height: 100vh;
   background: var(--almost-white);
@@ -5,10 +152,17 @@
 }
 
 .storefront-header {
-  background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-black) 100%);
-  color: var(--pure-white);
-  padding: 50px 20px;
+  background: #111;
+  color: #fff;
+  padding: 12px 20px 6px 20px;
+  min-height: 40px;
   animation: slideDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13), 0 1.5px 0 rgba(0,0,0,0.04);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
 }
 
 @keyframes slideDown {
@@ -27,12 +181,18 @@
   margin: 0 auto;
 }
 
-.header-content h1 {
-  font-size: 2.5rem;
-  margin: 0 0 15px 0;
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+
+.header-content p {
+  font-size: 1.2rem;
+  margin: 0 0 4px 0;
+  font-family: 'Inter', 'Playfair Display', serif;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  /* Removed underline and bottom padding */
+  display: inline-block;
 }
 
 .seller-meta {
@@ -89,9 +249,9 @@
 }
 
 .storefront-controls {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
+      background: #fff;
+      color: #111;
+      padding: 0.7em 0 0.7em 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -270,9 +430,9 @@
 
 /* Simplified header: store name aligned left */
 .store-name-left { 
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   margin: 0;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Lora', 'Inter', serif, sans-serif;
   font-weight: 700;
   color: var(--pure-white);
   text-align: left;
@@ -305,11 +465,11 @@
 }
 .footer-left{ flex:1 1 480px }
 .footer-right{ width:260px; min-width:200px; display:flex; flex-direction:column; gap:12px; align-items:flex-end }
-.footer-store{ margin:0; font-size:1.25rem; font-weight:700; font-family:'Playfair Display', serif; color:var(--primary-black) }
+.footer-store{ margin:0; font-size:1.25rem; font-weight:700; font-family:'Playfair Display', serif; color:#fff }
 .seller-meta-footer{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:8px 0 }
 .seller-description{ margin:0 0 8px 0; color:var(--light-grey); font-size:0.95rem }
 .storefront-footer .contact-info{ display:flex; flex-direction:column; gap:6px; align-items:flex-end }
-.storefront-footer .contact-info p{ margin:0; color:var(--medium-grey); font-size:0.95rem }
+.storefront-footer .contact-info p{ margin:0; color:#fff; font-size:0.95rem }
 .branding{ font-weight:700; color:var(--medium-grey); font-size:0. NineRem; }
 
 @media (max-width:768px){

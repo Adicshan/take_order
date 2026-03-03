@@ -69,11 +69,12 @@ router.post('/create', async (req, res) => {
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     order.items.forEach(item => {
       // Try to build a product link using storeSlug and productId if available
+
       let productLink = '#';
       if (item.productId && seller && seller.storeSlug) {
         productLink = `${baseUrl}/${seller.storeSlug}/view/${item.productId}`;
       }
-      itemsHtml += `<li>${item.productName} (Qty: ${item.quantity}) - ₹${item.price} <br/><a href="${productLink}" target="_blank">Click here to view product</a></li>`;
+      itemsHtml += `<li>${item.productName} (Qty: ${item.quantity})${item.size ? ' (Size: ' + item.size + ')' : ''} - ₹${item.price} <br/><a href="${productLink}" target="_blank">Click here to view product</a></li>`;
     });
 
     const orderDetailsHtml = `

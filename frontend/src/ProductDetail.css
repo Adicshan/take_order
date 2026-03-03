@@ -76,7 +76,7 @@
 }
 
 .seller-info-box {
-  background: var(--almost-white);
+ 
   padding: 18px;
   border-radius: 6px;
   margin-bottom: 20px;
@@ -90,6 +90,7 @@
   color: var(--primary-black);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
+  color: black;
 }
 
 .visit-shop-btn {

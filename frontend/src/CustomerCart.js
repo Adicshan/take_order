@@ -74,10 +74,13 @@ const CustomerCart = () => {
         items: cartItems.map(item => ({
           _id: item._id,
           name: item.name,
+          category:item.category,
+          ...(item.category === 'Clothing' && item.selectedSize ? { size: item.selectedSize } : {}),
           price: item.price,
           quantity: item.cartQuantity,
           sellerId: item.sellerId,
           imageUrl: item.imageUrl
+
         })),
         subtotal: subtotal.toFixed(2),
         shipping: shipping.toFixed(2),
@@ -157,7 +160,7 @@ const CustomerCart = () => {
         <div className="cart-items-section">
           <div className="cart-items">
             {cartItems.map(item => (
-              <div key={item._id} className="cart-item">
+              <div key={item._id + (item.selectedSize || '')} className="cart-item">
                 <div className="item-image">
                   {item.imageUrl ? (
                     <img 
@@ -174,6 +177,9 @@ const CustomerCart = () => {
 
                 <div className="item-details">
                   <h3>{item.name}</h3>
+                  {item.category === 'Clothing' && item.selectedSize && (
+                    <p className="item-size">Size: <b>{item.selectedSize}</b></p>
+                  )}
                   <p className="item-description">{item.description?.substring(0, 50)}...</p>
                   <p className="item-category">{item.category}</p>
                 </div>

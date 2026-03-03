@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './ProductDetail.css';
 import { API_URL } from './config';
 
 const ProductDetail = () => {
+    const [selectedSize, setSelectedSize] = useState('M');
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -46,19 +48,35 @@ const ProductDetail = () => {
 
  
   const handleAddToCart = () => {
+    if (product.category === 'Clothing' && (!selectedSize || selectedSize === '')) {
+      alert('Please select a size before adding to cart.');
+      return;
+    }
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingItem = cart.find(item => item._id === product._id);
-    
-    if (existingItem) {
-      existingItem.cartQuantity += quantity;
-    } else {
+    let updated = false;
+    for (let i = 0; i < cart.length; i++) {
+      if (
+        cart[i]._id === product._id &&
+        (product.category !== 'Clothing' || cart[i].selectedSize === selectedSize)
+      ) {
+        cart[i].cartQuantity += quantity;
+        updated = true;
+        break;
+      }
+    }
+    if (!updated) {
       cart.push({
         ...product,
-        cartQuantity: quantity
+        cartQuantity: quantity,
+        ...(product.category === 'Clothing' ? { selectedSize } : {})
       });
     }
-    
     localStorage.setItem('cart', JSON.stringify(cart));
+    // Store seller frontpage link in localStorage
+    if (seller && seller.storeSlug) {
+      const sellerFrontLink = `${window.location.origin}/${seller.storeSlug}`;
+      localStorage.setItem('sellerFrontLink', sellerFrontLink);
+    }
     // notify other UI that cart changed
     try { window.dispatchEvent(new Event('cartUpdated')); } catch(e){}
     // Store seller info for navigation
@@ -69,7 +87,6 @@ const ProductDetail = () => {
       } catch(e){}
     }
     setAddedToCart(true);
-    
     setTimeout(() => {
       setAddedToCart(false);
     }, 2000);
@@ -108,12 +125,10 @@ const ProductDetail = () => {
 
         <div className="product-details">
           <h1>{product.name}</h1>
-          
+      {/*}    
           <div className="seller-info-box">
-              {seller && (
-                <>
-                  <p className="seller-name">🏪 Sold by: <strong>{seller.storeName}</strong></p>
-                </>
+              {seller && (        
+                  <p className="seller-name" style={{color:"white"}}>🏪 Sold by: <strong>{seller.storeName}</strong></p>
               )}
           </div>
 
@@ -134,10 +149,44 @@ const ProductDetail = () => {
             <span className="category-badge">{product.category}</span>
             <span className="status-badge">{product.status}</span>
           </div>
+          {/* Show size selection if category is Clothing */}
+          {product.category === 'Clothing' && (
+            <div className="product-size-select" style={{ margin: '12px 0' }}>
+              <label style={{ fontWeight: 500, marginRight: 8 }}>Size:</label>
+              {['S', 'M', 'L'].map(size => (
+                <button
+                  key={size}
+                  type="button"
+                  className={`size-btn${selectedSize === size ? ' selected' : ''}`}
+                  style={{
+                    marginRight: 6,
+                    padding: '3px 12px',
+                    fontSize: '0.95rem',
+                    borderRadius: 5,
+                    border: selectedSize === size ? '2px solid #111' : '1px solid #bbb',
+                    background: selectedSize === size ? '#f2f2f2' : '#fff',
+                    fontWeight: selectedSize === size ? 700 : 400,
+                    cursor: 'pointer',
+                    outline: 'none',
+                  }}
+                  onClick={() => setSelectedSize(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="product-description">
             <h2>Description</h2>
-            <p>{product.description}</p>
+              <p>
+                {product.description && product.description.split('<br>').map((line, idx) => (
+                  <React.Fragment key={idx}>
+                    {line}
+                    {idx !== product.description.split('<br>').length - 1 && <br />}
+                  </React.Fragment>
+                ))}
+              </p>
           </div>
 
           {product.quantity > 0 && (

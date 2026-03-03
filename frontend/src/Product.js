@@ -65,9 +65,10 @@ const Product = ({ product, showBuy = true }) => {
         </div>
         <div className="product-actions">
           <Link to={productDetailLink} className="btn btn-sm outline view-btn" onClick={e => e.stopPropagation()}>View</Link>
-          {showBuy && (
+      {/*}    {showBuy && (
             <button className="btn primary" style={{color:"5px"}} onClick={e => {e.stopPropagation(); handleAddToCart();}}>Add to Cart</button>
           )}
+            */}
         </div>
         {added && <div className="added-badge">Added ✓</div>}
       </div>

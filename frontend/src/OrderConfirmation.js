@@ -13,12 +13,22 @@ const OrderConfirmation = () => {
       navigate('/cart');
       return;
     }
-    setOrder(JSON.parse(lastOrder));
+    const parsedOrder = JSON.parse(lastOrder);
+    setOrder(parsedOrder);
     // Clear cart count after order confirmation
     localStorage.setItem('cartCount', '0');
     // Also clear cart array and notify listeners
     localStorage.setItem('cart', '[]');
     window.dispatchEvent(new Event('cartUpdated'));
+    // Store seller frontpage link in localStorage
+    let sellerSlug = parsedOrder.sellerSlug;
+    if (!sellerSlug && parsedOrder.items && parsedOrder.items.length > 0) {
+      sellerSlug = parsedOrder.items[0].sellerSlug;
+    }
+    if (sellerSlug) {
+      const sellerFrontLink = `${window.location.origin}/${sellerSlug}`;
+      localStorage.setItem('sellerFrontLink', sellerFrontLink);
+    }
   }, [navigate]);
 
   if (!order) {
@@ -30,6 +40,9 @@ const OrderConfirmation = () => {
   if (!sellerSlug && order.items && order.items.length > 0) {
     sellerSlug = order.items[0].sellerSlug;
   }
+    const sellerLink = sellerSlug ? `/seller/${sellerSlug}` : '/';
+
+    
 
   return (
     <div className="confirmation-container" style={{ background: '#eaffea', minHeight: '100vh', padding: 0 }}>
@@ -59,6 +72,9 @@ const OrderConfirmation = () => {
             <div key={index} className="item-row">
               <div className="item-info">
                 <p className="item-name">{item.name}</p>
+                {item.category === 'Clothing' && item.selectedSize && (
+                  <p className="item-size">Size: <b>{item.selectedSize}</b></p>
+                )}
                 <p className="item-qty">Quantity: {item.quantity}</p>
               </div>
               <div className="item-price">
@@ -96,10 +112,10 @@ const OrderConfirmation = () => {
 
         <div className="action-buttons" style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 24 }}>
           <Link
-            to="/adicshan"
-            className="continue-btn"
+            to={localStorage.getItem('sellerFrontLink') || '/'}
+            className="home-btn"
             style={{
-              background: 'black',
+              background: '#39d353',
               color: '#fff',
               border: 'none',
               borderRadius: '8px',

@@ -5,6 +5,7 @@ import { API_URL } from './config';
 import Product from './Product';
 
 const SellerDashboard = () => {
+    const [addProductLoading, setAddProductLoading] = useState(false);
   const navigate = useNavigate();
   // Define refs for scrollbars and table at the top of the component
   const ordersTableTopScrollRef = useRef(null);
@@ -127,12 +128,13 @@ const SellerDashboard = () => {
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
-    
+    if (addProductLoading) return;
+    setAddProductLoading(true);
     if (!productFormData.name || !productFormData.description || !productFormData.price || !productFormData.quantity || !productFormData.category) {
       setMessage({ type: 'error', text: 'Please fill in all fields' });
+      setAddProductLoading(false);
       return;
     }
-
     try {
       const formData = new FormData();
       formData.append('name', productFormData.name);
@@ -147,7 +149,6 @@ const SellerDashboard = () => {
       if (seller && seller._id) {
         formData.append('sellerId', seller._id);
       }
-
       const response = await fetch(`${API_URL}/products/create`, {
         method: 'POST',
         headers: {
@@ -155,9 +156,7 @@ const SellerDashboard = () => {
         },
         body: formData
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setProducts([data.product, ...products]);
         setProductFormData({ name: '', description: '', price: '', quantity: '', category: '', imageFile: null, imagePreview: null });
@@ -171,6 +170,7 @@ const SellerDashboard = () => {
       console.error('Error adding product:', error);
       setMessage({ type: 'error', text: 'Error adding product: ' + error.message });
     }
+    setAddProductLoading(false);
   };
 
   const handleDeleteProduct = async (productId) => {
@@ -337,6 +337,7 @@ const SellerDashboard = () => {
                         onChange={handleInputChange}
                         placeholder="Product name"
                         required
+                        disabled={addProductLoading}
                       />
                     </div>
                     <div className="form-group">
@@ -348,6 +349,7 @@ const SellerDashboard = () => {
                         placeholder="Product description"
                         rows="3"
                         required
+                        disabled={addProductLoading}
                       />
                     </div>
                     <div className="form-row">
@@ -402,7 +404,9 @@ const SellerDashboard = () => {
                       )}
                     </div>
                     <div className="modal-buttons">
-                      <button type="submit" className="btn-primary">Add Product</button>
+                      <button type="submit" className="btn-primary" disabled={addProductLoading}>
+                        {addProductLoading ? 'Adding...' : 'Add Product'}
+                      </button>
                       <button type="button" className="btn-secondary" onClick={() => setShowAddProduct(false)}>Cancel</button>
                     </div>
                   </form>

@@ -80,12 +80,14 @@ const Order = () => {
         if (!ordersBySellerMap[key]) {
           ordersBySellerMap[key] = [];
         }
+        console.log('item size for order submission:', item.size || item.selectedSize);
         ordersBySellerMap[key].push({
           productId: item._id,
           productName: item.name,
           quantity: item.quantity,
+          size: item.size,
           price: item.price,
-          subtotal: item.price * item.quantity
+          subtotal: item.price * item.quantity,
         });
       });
 
@@ -148,9 +150,13 @@ const Order = () => {
             <div className="order-items">
               {order.items.map((item, index) => (
                 <div key={index} className="order-item">
-                  <div className="item-info">
+                  <div className="item-info"> 
                     <h4>{item.name}</h4>
                     <p>Quantity: {item.quantity}</p>
+
+                    {item.size && 
+                      <p>Size: {item.size || item.selectedSize}</p>
+                    }
                   </div>
                   <div className="item-price">
                     <span>₹{(item.price * item.quantity).toFixed(2)}</span>
