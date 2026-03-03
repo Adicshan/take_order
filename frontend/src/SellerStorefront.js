@@ -105,7 +105,7 @@ const SellerStorefront = () => {
           
           {/* Why Shop with Us Section */}
           <section className="why-shop-section">
-            <h2 className="why-shop-title">Why Buy from This Seller</h2>
+            <h2 className="why-shop-title">Why Buy from Tanveer Collection</h2>
             <div className="why-shop-features">
               <div className="why-shop-feature">
                 <h3>Trusted Seller</h3>
