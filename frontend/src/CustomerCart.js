@@ -240,7 +240,7 @@ const CustomerCart = () => {
 
             <div className="summary-total">
               <span>Total</span>
-              <span>₹{total.toFixed(2)}</span>
+              <span style={{ marginLeft: 'auto', minWidth: '100px', textAlign: 'right', display: 'inline-block' }}>₹{total.toFixed(2)}</span>
             </div>
 
             <button 

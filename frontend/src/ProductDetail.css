@@ -536,6 +536,12 @@
 }
 
 @media (max-width: 480px) {
+  .summary-total span:last-child {
+    margin-left: auto;
+    min-width: 140px;
+    text-align: right;
+    display: inline-block;
+  }
   .product-detail-container {
     padding: 10px;
   }
