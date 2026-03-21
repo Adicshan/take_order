@@ -61,6 +61,17 @@ const Order = () => {
     }
   };
 
+  // Razorpay Checkout script loader
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -68,68 +79,114 @@ const Order = () => {
       return;
     }
 
-    setSubmitting(true);
+    setSubmitting(false);
 
+    // Payment logic moved from CustomerCart.js
     try {
-      // Group items by seller
-      const ordersBySellerMap = {};
-      
-      order.items.forEach(item => {
-        const itemSellerId = item.sellerId && item.sellerId._id ? item.sellerId._id : item.sellerId;
-        const key = String(itemSellerId);
-        if (!ordersBySellerMap[key]) {
-          ordersBySellerMap[key] = [];
-        }
-        console.log('item size for order submission:', item.size || item.selectedSize);
-        ordersBySellerMap[key].push({
-          productId: item._id,
-          productName: item.name,
-          quantity: item.quantity,
-          size: item.size,
-          price: item.price,
-          subtotal: item.price * item.quantity,
-        });
+      const loaded = await loadRazorpayScript();
+      if (!loaded) {
+        alert('Failed to load payment gateway. Please try again.');
+        setSubmitting(false);
+        return;
+      }
+      // Create Razorpay order from backend
+      const paymentRes = await fetch(`${API_URL}/payment/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: order.total })
       });
-
-      // Save orders by seller to database
-      for (const [sId, products] of Object.entries(ordersBySellerMap)) {
-        try {
-          await fetch(`${API_URL}/orders/create`, {
+      const paymentData = await paymentRes.json();
+      if (!paymentData.id) {
+        alert('Failed to initiate payment.');
+        setSubmitting(false);
+        return;
+      }
+      // Open Razorpay Checkout
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        amount: paymentData.amount,
+        currency: paymentData.currency,
+        name: 'Order Payment',
+        description: 'Complete your payment to place order',
+        order_id: paymentData.id,
+        handler: async function (response) {
+          // Verify payment on backend
+          const verifyRes = await fetch(`${API_URL}/payment/verify`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              sellerId: sId,
-              items: products,
-              subtotal: order.subtotal,
-              shipping: order.shipping,
-              total: order.total,
-              status: 'pending',
-              buyer: formData
-            })
+            body: JSON.stringify(response)
           });
-        } catch (error) {
-          console.log('Order creation error:', error);
-        }
-      }
-
-      // Update order with buyer details
-      const completedOrder = {
-        ...order,
-        buyer: formData,
-        status: 'confirmed'
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            // Payment successful, proceed to place order
+            // Group items by seller
+            const ordersBySellerMap = {};
+            order.items.forEach(item => {
+              const itemSellerId = item.sellerId && item.sellerId._id ? item.sellerId._id : item.sellerId;
+              const key = String(itemSellerId);
+              if (!ordersBySellerMap[key]) {
+                ordersBySellerMap[key] = [];
+              }
+              ordersBySellerMap[key].push({
+                productId: item._id,
+                productName: item.name,
+                quantity: item.quantity,
+                size: item.size,
+                price: item.price,
+                subtotal: item.price * item.quantity,
+              });
+            });
+            // Save orders by seller to database
+            for (const [sId, products] of Object.entries(ordersBySellerMap)) {
+              try {
+                await fetch(`${API_URL}/orders/create`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    sellerId: sId,
+                    items: products,
+                    subtotal: order.subtotal,
+                    shipping: order.shipping,
+                    total: order.total,
+                    status: 'pending',
+                    buyer: formData
+                  })
+                });
+              } catch (error) {
+                console.log('Order creation error:', error);
+              }
+            }
+            // Update order with buyer details
+            const completedOrder = {
+              ...order,
+              buyer: formData,
+              status: 'confirmed'
+            };
+            // Save to localStorage
+            localStorage.setItem('lastOrder', JSON.stringify(completedOrder));
+            localStorage.removeItem('pendingOrder');
+            localStorage.removeItem('cart');
+            // Navigate to confirmation page
+            navigate('/order-confirmation');
+          } else {
+            alert('Payment verification failed. Please try again.');
+          }
+          setSubmitting(false);
+        },
+        theme: { color: '#3399cc' }
       };
-
-      // Save to localStorage
-      localStorage.setItem('lastOrder', JSON.stringify(completedOrder));
-      localStorage.removeItem('pendingOrder');
-      localStorage.removeItem('cart');
-
-      // Navigate to confirmation page
-      navigate('/order-confirmation');
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function () {
+        setSubmitting(false);
+      });
+      rzp.on('modal.closed', function () {
+        setSubmitting(false);
+        alert("Payment cancelled. You can try again.");
+      });
+      rzp.open();
     } catch (error) {
-      console.error('Error submitting order:', error);
+      console.error('Error during payment/order:', error);
       alert('Error placing order. Please try again.');
-    } finally {
       setSubmitting(false);
     }
   };
@@ -300,7 +357,7 @@ const Order = () => {
                       <span className="spinner" style={{ width: 18, height: 18, border: '3px solid #fff', borderTop: '3px solid #39d353', borderRadius: '50%', animation: 'spin 1s linear infinite', display: 'inline-block' }}></span>
                       Processing...
                     </span>
-                  ) : 'Confirm & Place Order'}
+                  ) : 'Make payment → '}
                 </button>
               </div>
             </form>

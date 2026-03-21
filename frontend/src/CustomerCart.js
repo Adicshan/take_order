@@ -53,110 +53,71 @@ const CustomerCart = () => {
   };
 
   const subtotal = calculateSubtotal();
-  const shipping = subtotal > 50 ? 0 : 9.99;
+  const shipping = 0;
   const total = subtotal + shipping;
 
   const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
-
-    setLoading(true);
-
-    try {
-      // Get the first seller from cart items — prefer storeSlug, fall back to stored values
-      const firstItem = cartItems[0] || {};
-      const firstSellerSlug = firstItem?.seller?.storeSlug || localStorage.getItem('currentStoreSlug') || '';
-      const firstSellerId = firstItem?.sellerId || firstItem?.seller?._id || localStorage.getItem('currentSeller') || '';
-
-      // Create order and store in localStorage
-      const order = {
-        orderId: 'ORD-' + Date.now(),
-        orderDate: new Date().toLocaleString(),
-        items: cartItems.map(item => ({
-          _id: item._id,
-          name: item.name,
-          category:item.category,
-          ...(item.category === 'Clothing' && item.selectedSize ? { size: item.selectedSize } : {}),
-          price: item.price,
-          quantity: item.cartQuantity,
-          sellerId: item.sellerId,
-          imageUrl: item.imageUrl
-
-        })),
-        subtotal: subtotal.toFixed(2),
-        shipping: shipping.toFixed(2),
-        total: total.toFixed(2),
-        status: 'pending'
-      };
-
-      // Save order to localStorage for the order page to use
-      localStorage.setItem('pendingOrder', JSON.stringify(order));
-
-      // Navigate to order page with store slug or seller ID (attempt to resolve storeSlug from sellerId)
-      let orderLink = '/cart';
-      if (firstSellerSlug) {
-        orderLink = `/${firstSellerSlug}/order`;
-      } else if (firstSellerId) {
-        // try to resolve storeSlug from seller id
-        try {
-          const sellerRes = await fetch(`${API_URL}/sellers/${firstSellerId}`);
-          if (sellerRes.ok) {
-            const sellerData = await sellerRes.json();
-            const resolvedSlug = sellerData.seller?.storeSlug || sellerData.storeSlug || '';
-            if (resolvedSlug) {
-              try { localStorage.setItem('currentStoreSlug', resolvedSlug); } catch(e){}
-              orderLink = `/${resolvedSlug}/order`;
+      if (cartItems.length === 0) return;
+      setLoading(false);
+    // Only navigate to order page, payment is now handled there
+        // Only navigate to order page, payment is now handled there
+        if (cartItems.length === 0) return;
+        // Get the first seller from cart items — prefer storeSlug, fall back to stored values
+        const firstItem = cartItems[0] || {};
+        const firstSellerSlug = firstItem?.seller?.storeSlug || localStorage.getItem('currentStoreSlug') || '';
+        const firstSellerId = firstItem?.sellerId || firstItem?.seller?._id || localStorage.getItem('currentSeller') || '';
+        // Create order and store in localStorage
+        const order = {
+          orderId: 'ORD-' + Date.now(),
+          orderDate: new Date().toLocaleString(),
+          items: cartItems.map(item => ({
+            _id: item._id,
+            name: item.name,
+            category:item.category,
+            ...(item.category === 'Clothing' && item.selectedSize ? { size: item.selectedSize } : {}),
+            price: item.price,
+            quantity: item.cartQuantity,
+            sellerId: item.sellerId,
+            imageUrl: item.imageUrl
+          })),
+          subtotal: subtotal.toFixed(2),
+          shipping: shipping.toFixed(2),
+          total: total.toFixed(2),
+          status: 'pending'
+        };
+        localStorage.setItem('pendingOrder', JSON.stringify(order));
+        let orderLink = '/cart';
+        if (firstSellerSlug) {
+          orderLink = `/${firstSellerSlug}/order`;
+        } else if (firstSellerId) {
+          try {
+            const sellerRes = await fetch(`${API_URL}/sellers/${firstSellerId}`);
+            if (sellerRes.ok) {
+              const sellerData = await sellerRes.json();
+              const resolvedSlug = sellerData.seller?.storeSlug || sellerData.storeSlug || '';
+              if (resolvedSlug) {
+                try { localStorage.setItem('currentStoreSlug', resolvedSlug); } catch(e){}
+                orderLink = `/${resolvedSlug}/order`;
+              } else {
+                orderLink = `/order/${firstSellerId}`;
+              }
             } else {
               orderLink = `/order/${firstSellerId}`;
             }
-          } else {
+          } catch (err) {
+            console.error('Failed to resolve seller slug:', err);
             orderLink = `/order/${firstSellerId}`;
           }
-        } catch (err) {
-          console.error('Failed to resolve seller slug:', err);
-          orderLink = `/order/${firstSellerId}`;
         }
-      }
-      // If no seller info at all, stay on cart and show message
-      if (!orderLink || orderLink === '/') {
-        alert('Unable to determine seller for checkout. Please ensure cart items belong to a seller.');
-        setLoading(false);
-        return;
-      }
-      navigate(orderLink);
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Error during checkout. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+        if (!orderLink || orderLink === '/') {
+          alert('Unable to determine seller for checkout. Please ensure cart items belong to a seller.');
+          return;
+        }
+        navigate(orderLink);
   };
 
-  if (cartItems.length === 0) {
-    const sellerId = sellerIdForLinks();
-    const invalid = ['cart','order','products','marketplace','admin','seller-auth','seller-signin','seller-signup'];
-    // Navigate to the seller's storefront (/:storeSlug) when continuing shopping
-    const sellerLink = sellerId && !invalid.includes(sellerId) ? `/${sellerId}` : '/';
-    return (
-      <div className="cart-container">
-        <div className="empty-cart">
-          <h1>🛒 Your Cart is Empty</h1>
-          <p>Add some products to get started</p>
-          <Link to={sellerLink} className="continue-shopping-btn">
-            Continue Shopping
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="cart-container">
-      <div className="cart-header">
-        <h1>🛒 Shopping Cart</h1>
-        <Link to={ sellerIdForLinks() ? `/${sellerIdForLinks()}` : '/' } className="back-link">← Continue Shopping</Link>
-      </div>
-
-      <div className="cart-content">
+    <div className="cart-content">
         <div className="cart-items-section">
           <div className="cart-items">
             {cartItems.map(item => (
@@ -229,7 +190,8 @@ const CustomerCart = () => {
                 {shipping === 0 ? (
                   <span className="free-shipping">FREE</span>
                 ) : (
-                  `₹${shipping.toFixed(2)}`
+                  <span className="free-shipping">FREE</span>
+               //   `₹${shipping.toFixed(2)}`
                 )}
               </span>
             </div>
@@ -252,15 +214,13 @@ const CustomerCart = () => {
             </button>
 
             <div className="cart-notes">
-              <p>✓ Secure payment processing</p>
               <p>✓ Fast and reliable delivery</p>
               <p>✓ 100% authentic products</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default CustomerCart;
