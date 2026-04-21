@@ -4,6 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './ProductDetail.css';
 import { API_URL } from './config';
 
+import { API_BASE_URL } from './config';
+
+const API_BASE = API_BASE_URL;
+
 const ProductDetail = () => {
     const [selectedSize, setSelectedSize] = useState('M');
   const { productId } = useParams();
@@ -104,6 +108,19 @@ const ProductDetail = () => {
 
   const total = (product.price * quantity).toFixed(2);
 
+
+
+  let imageSrc = 'https://via.placeholder.com/300x300?text=No+Image';
+  if (product.imageUrl) {
+    let url = product.imageUrl.startsWith('http') ? product.imageUrl : `${API_BASE}${product.imageUrl}`;
+   
+
+    if(url.includes('/upload/')){
+      url = url.replace('/upload/', '/upload/q_auto,f_auto/');
+    }
+    imageSrc = url;
+  }
+
   return (
     <div className="product-detail-container">
       <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
@@ -112,7 +129,11 @@ const ProductDetail = () => {
         <div className="product-images">
           {product.imageUrl ? (
             <img 
+
               src={product.imageUrl.startsWith('http') ? product.imageUrl : `${API_URL.split('/api')[0]}${product.imageUrl}`}
+
+              src={imageSrc}
+
               alt={product.name}
               onError={(e) => {
                 e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';

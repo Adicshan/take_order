@@ -10,7 +10,17 @@ const Product = ({ product, showBuy = true }) => {
   const [added, setAdded] = useState(false);
   let imageSrc = 'https://via.placeholder.com/300x300?text=No+Image';
   if (product.imageUrl) {
+
     imageSrc = product.imageUrl.startsWith('http') ? product.imageUrl : `${API_BASE}${product.imageUrl}`;
+
+    let url = product.imageUrl.startsWith('http') ? product.imageUrl : `${API_BASE}${product.imageUrl}`;
+   
+
+    if(url.includes('/upload/')){
+      url = url.replace('/upload/', '/upload/q_auto,f_auto/');
+    }
+    imageSrc = url;
+
   }
 
   const handleAddToCart = () => {
