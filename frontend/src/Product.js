@@ -51,12 +51,25 @@ const Product = ({ product, showBuy = true }) => {
   const storeSlug = (product.seller && product.seller.storeSlug) || '';
   
   const productDetailLink = storeSlug ? `/${storeSlug}/view/${product._id}` : `/view/${product._id}`;
+const isMobile = window.innerWidth <= 480;
 
   return (
-    <Link to={productDetailLink} className="product-card" style={{textDecoration:'none', color:'inherit'}}>
+  <Link to={productDetailLink} className="product-card" 
+  style={{
+    maxWidth: isMobile ? '95vw' : '250px',
+    gridTemplateColumns: isMobile ? 'repeat(auto-fit, minmax(10px, 2fr))' : 'repeat(auto-fit, minmax(140px, 1fr))'
+  }}
+  >
       <div className="product-image">
         {product.imageUrl ? (
-          <img src={imageSrc} alt={product.name} loading="eager" decoding="async" onError={(e) => (e.target.src = 'https://via.placeholder.com/300x300?text=No+Image')} />
+          <img
+            src={imageSrc}
+
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+            onError={(e) => (e.target.src = 'https://via.placeholder.com/300x300?text=No+Image')}
+          />
         ) : (
           <div className="image-fallback">{product.image || '🛍️'}</div>
         )}
@@ -73,14 +86,12 @@ const Product = ({ product, showBuy = true }) => {
           <span className="current">₹{(product.price || 0).toFixed(2)}</span>
           {product.originalPrice ? <span className="original">₹{Number(product.originalPrice).toFixed(2)}</span> : null}
         </div>
-        <div className="product-actions">
+
+         <div className="product-actions">
           <Link to={productDetailLink} className="btn btn-sm outline view-btn" onClick={e => e.stopPropagation()}>View</Link>
-      {/*}    {showBuy && (
-            <button className="btn primary" style={{color:"5px"}} onClick={e => {e.stopPropagation(); handleAddToCart();}}>Add to Cart</button>
-          )}
-            */}
+         
         </div>
-        {added && <div className="added-badge">Added ✓</div>}
+    
       </div>
     </Link>
   );

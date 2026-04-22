@@ -430,12 +430,12 @@
 
 /* Simplified header: store name aligned left */
 .store-name-left { 
-  font-size: 1.2rem;
+  font-size: 3.2rem;
   margin: 0;
   font-family: 'Lora', 'Inter', serif, sans-serif;
   font-weight: 700;
   color: var(--pure-white);
-  text-align: left;
+  text-align: center;
 }
 
 .empty-state,
@@ -625,6 +625,10 @@
 }
 
 @media (max-width: 480px) {
+
+  .product-grid{
+    grid-template-columns: repeat(2,1fr);
+  }
   .storefront-header {
     padding: 25px 10px;
   }
