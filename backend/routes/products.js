@@ -57,9 +57,9 @@ const verifySeller = async (req, res, next) => {
 // Create product
 router.post('/create', verifySeller, upload.single('image'), async (req, res) => {
   try {
-    const { name, description, price, quantity, category } = req.body;
+    const { name, description, price, quantity, category,size } = req.body;
 
-    if (!name || !description || !price || !quantity || !category) {
+    if (!name || !description || !price || !quantity || !category || !size) {
       if (req.file) {
         fs.unlinkSync(req.file.path);
       }
@@ -78,6 +78,7 @@ router.post('/create', verifySeller, upload.single('image'), async (req, res) =>
       price: parseFloat(price),
       quantity: parseInt(quantity),
       category,
+      size,
       imageUrl: imageUrl,
       status: 'active'
     });

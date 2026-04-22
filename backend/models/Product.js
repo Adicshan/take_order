@@ -32,6 +32,11 @@ const productSchema = new mongoose.Schema({
     required: true,
     enum: ['Electronics', 'Clothing', 'Home', 'Sports', 'Food', 'Other']
   },
+  size:{
+    type: String,
+    required: true,
+    enum: ['Yes', 'No']
+  },
   imageUrl: {
     type: String,
     default: null

@@ -26,6 +26,7 @@ const SellerDashboard = () => {
     price: '',
     quantity: '',
     category: '',
+    size: '',
     imageFile: null,
     imagePreview: null
   });
@@ -142,6 +143,7 @@ const SellerDashboard = () => {
       formData.append('price', productFormData.price);
       formData.append('quantity', productFormData.quantity);
       formData.append('category', productFormData.category);
+      formData.append('size', productFormData.size);
       if (productFormData.imageFile) {
         formData.append('image', productFormData.imageFile);
       }
@@ -159,7 +161,7 @@ const SellerDashboard = () => {
       const data = await response.json();
       if (response.ok) {
         setProducts([data.product, ...products]);
-        setProductFormData({ name: '', description: '', price: '', quantity: '', category: '', imageFile: null, imagePreview: null });
+        setProductFormData({ name: '', description: '', price: '', quantity: '', category: '',size: '', imageFile: null, imagePreview: null });
         setShowAddProduct(false);
         setMessage({ type: 'success', text: 'Product added successfully!' });
         setTimeout(() => setMessage({ type: '', text: '' }), 3000);
@@ -388,6 +390,15 @@ const SellerDashboard = () => {
                         <option value="Other">Other</option>
                       </select>
                     </div>
+                    
+                    <div className="form-group">
+                      <label>Size*</label>
+                      <select name="size" value={productFormData.size} onChange={handleInputChange} required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </select>
+                      </div>
+
                     <div className="form-group">
                       <label>Product Image</label>
                       <input
