@@ -123,6 +123,14 @@ const sellerSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  storeImg:{
+    type: String,
+     default: 'default_store.png'
+  },
+  storeDesc:{
+    type: String,
+    default: 'Welcome to our store!'
   }
 });
 

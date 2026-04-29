@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import './CustomerCart.css';
 import { API_URL } from './config';
+import VISA from './header_images/visa.png';
+import MASTERCARD from './header_images/masterCard.png';
+import RUPAY from './header_images/RuPay.png';
+import UPI from './header_images/upi.png';
+import WALLET from './header_images/wallet.png';
+
+
 
 const CustomerCart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const params = useParams();
+
 
   useEffect(() => {
     loadCart();
@@ -117,12 +125,22 @@ const CustomerCart = () => {
   };
 
   return (
+
     <div className="cart-content">
-        <div className="cart-items-section">
-          <div className="cart-items">
-            {cartItems.map(item => (
-              <div key={item._id + (item.selectedSize || '')} className="cart-item">
-                <div className="item-image">
+     <Link
+                  to={localStorage.getItem('sellerFrontLink') || '/'}
+                  style={{ textDecoration: 'none',
+                    
+                   }}
+                  className="back-btn-cart">
+                  ← Back
+                </Link>
+
+      <div className="cart-items-section">
+        <div className="cart-items">
+          {cartItems.map(item => (
+            <div key={item._id + (item.selectedSize || '')} className="cart-item">
+              <div className="item-image">
                   {item.imageUrl ? (
                     <img 
                       src={item.imageUrl.startsWith('http') ? item.imageUrl : `${API_URL.split('/api')[0]}${item.imageUrl}`}
@@ -159,17 +177,16 @@ const CustomerCart = () => {
                   <button onClick={() => updateQuantity(item._id, item.cartQuantity + 1)}>+</button>
                 </div>
 
-                <div className="item-total">
+                <div className="item-total">Total:
                   ₹{(item.price * item.cartQuantity).toFixed(2)}
                 </div>
 
-                <button 
-                  className="remove-btn"
-                  onClick={() => removeItem(item._id)}
-                  title="Remove from cart"
-                >
-                  ✕
-                </button>
+               <button 
+  className="remove-btn"
+  onClick={() => removeItem(item._id)}
+>
+  🗑
+</button>
               </div>
             ))}
           </div>
@@ -217,6 +234,19 @@ const CustomerCart = () => {
               <p>✓ Fast and reliable delivery</p>
               <p>✓ 100% authentic products</p>
             </div>
+            <div className="payment-section">
+
+  <p className="secure-text">✓ Safe & Secure Payments</p>
+
+  <div className="payment-methods">
+    <img className='payment-img' src={VISA} alt="Visa" />
+    <img className='payment-img' src={MASTERCARD} alt="Mastercard" />
+    <img className='payment-img' src={RUPAY} alt="RuPay" />
+    <img className='payment-img' src={UPI} alt="UPI" />
+    <img className='payment-img' src={WALLET} alt="Wallet" />
+  </div>
+
+</div>
           </div>
         </div>
       </div>

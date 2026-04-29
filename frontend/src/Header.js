@@ -27,7 +27,7 @@ const Header = () => {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <Link to="/" className="logo">BlackCart</Link>
+        <Link to="/" className="logo">OrderPlace</Link>
 
         <div className="header-actions">
           <Link to="/cart" className="cart-link">🛒 <span className="cart-count">{cartCount}</span></Link>

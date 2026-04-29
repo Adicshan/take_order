@@ -9,7 +9,8 @@ import { API_BASE_URL } from './config';
 const API_BASE = API_BASE_URL;
 
 const ProductDetail = () => {
-    const [selectedSize, setSelectedSize] = useState('M');
+  const[sizeRequired, setSizeRequired] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('M');
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -171,7 +172,7 @@ const ProductDetail = () => {
             <span className="status-badge">{product.status}</span>
           </div>
           {/* Show size selection if category is Clothing */}
-          {product.category === 'Clothing' && (
+          {product.category === 'Clothing' && sizeRequired && (
             <div className="product-size-select" style={{ margin: '12px 0' }}>
               <label style={{ fontWeight: 500, marginRight: 8 }}>Size:</label>
               {['S', 'M', 'L'].map(size => (
@@ -268,7 +269,7 @@ const ProductDetail = () => {
                     }, 300);
                   }}
                 >
-                  ⚡ Buy Now
+                 Buy Now
                 </button>
               </div>
 

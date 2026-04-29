@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Product.css';
 import { Link } from 'react-router-dom';
 import { API_BASE_URL } from './config';
+import Bag from './header_images/bag.png';
 
 const API_BASE = API_BASE_URL;
 
@@ -74,66 +75,51 @@ const Product = ({ product, showBuy = true }) => {
 
   // ── Render ────────────────────────────────────────────────────
   return (
-    <Link to={productDetailLink} className="product-card">
+  <Link to={productDetailLink} className="product-card">
 
-      {/* Discount badge — sits inside .product-image via absolute positioning */}
-      {discountPct > 0 && (
-        <span className="discount-badge">−{discountPct}%</span>
-      )}
+  {/* Discount Badge */}
+  {discountPct > 0 && (
+    <span className="discount-badge">-{discountPct}%</span>
+  )}
 
-      {/* Image — always on top, full width */}
-      <div className="product-image">
-        {product.imageUrl ? (
-          <img
-            src={imageSrc}
-            alt={product.name}
-            loading="lazy"
-            decoding="async"
-            onError={e =>
-              (e.target.src =
-                'https://via.placeholder.com/300x300?text=No+Image')
-            }
-          />
-        ) : (
-          <div className="image-fallback">{product.image || '🛍️'}</div>
-        )}
-      </div>
+  {/* IMAGE */}
+  <div className="product-image">
+    {product.imageUrl ? (
+      <img
+        src={imageSrc}
+        alt={product.name}
+        loading="lazy"
+        decoding="async"
+        onError={e =>
+          (e.target.src =
+            'https://via.placeholder.com/300x300?text=No+Image')
+        }
+      />
+    ) : (
+      <div className="image-fallback">{product.image || '🛍️'}</div>
+    )}
+  </div>
 
-      {/* Info — always below image */}
-      <div className="product-info">
-        {sellerName ? (
-          <p className="seller-name">{sellerName}</p>
-        ) : null}
+  {/* INFO */}
+  <div className="product-info">
 
-        <h3>{product.name}</h3>
+    <p className="product-title">{product.name}</p>
 
-        <div className="rating" style={{ display: 'none' }}>
-          <span className="stars">★★★★★</span>
-          <span className="rating-score">{ratingDisplay || '-'}</span>
-          {reviews ? <span className="reviews">({reviews})</span> : null}
-        </div>
+    {/* PRICE */}
+    <div className="price-row">
+      <span className="current">₹{(product.price || 0).toFixed(2)}</span>
+    </div>
 
-        <div className="price">
-          <span className="current">₹{(product.price || 0).toFixed(2)}</span>
-          {product.originalPrice ? (
-            <span className="original">
-              ₹{Number(product.originalPrice).toFixed(2)}
-            </span>
-          ) : null}
-        </div>
+    {/* BUTTON */}
+    <div className="product-actions">
+      <span className="view-btn">
+        <img src={Bag} alt="Bag" /> VIEW DETAILS
+      </span>
+    </div>
 
-        <div className="product-actions">
-          <Link
-            to={productDetailLink}
-            className="btn btn-sm outline view-btn"
-            onClick={e => e.stopPropagation()}
-          >
-            View Details
-          </Link>
-        </div>
-      </div>
+  </div>
 
-    </Link>
+</Link>
   );
 };
 

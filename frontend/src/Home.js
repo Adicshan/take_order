@@ -19,7 +19,7 @@ function Home() {
       {/* Navbar */}
       <nav className="navbar">
         <div className="nav-content">
-          <div className="logo">BlackCart</div>
+          <div className="logo">OrderPlace</div>
           <div className="search-bar">
             <input type="text" placeholder="Search products, sellers..." />
             <button onClick={()=> navigate('/products')}>Search</button>
