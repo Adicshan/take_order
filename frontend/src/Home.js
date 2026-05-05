@@ -32,7 +32,7 @@ useEffect(() => {
 
 const fetchClientsDetails = async () => {
       try{
-           const response = await fetch(`http://localhost:5000/api/sellers`);
+           const response = await fetch(`https://take-order.onrender.com/api/sellers`);
             if(response.ok){
                const data = await response.json();
                setClients(data.sellers);
