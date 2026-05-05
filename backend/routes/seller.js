@@ -25,7 +25,19 @@ const verifySeller = async (req, res, next) => {
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
   }
-};
+};''
+
+router.get('/', async (req, res)=>{
+  try{
+     const sellers = await Seller.find().select('storeName storeSlug storeImg');
+     console.log('Fetched sellers:', sellers);
+     res.json({sellers});
+
+  }catch(error){
+    console.error('Error fetching sellers:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // @route   GET /api/seller/dashboard
 // @desc    Get seller dashboard data

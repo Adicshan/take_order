@@ -1,11 +1,21 @@
 import './Home.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from './config';
+import HeroImg from './header_images/heroImg.png';
+import BAG from './header_images/bag.png';
+import InstantStoreIcon from './header_images/instatStore.png';
+import NoCodeIcon from './header_images/noCoding.png';
+import SecureIcon from './header_images/Secure.png';
+import { useState, useEffect } from 'react';
+
 
 function Home() {
   const navigate = useNavigate();
+  const [clients,setClients] = useState([]);
+  const [msg,setMsg] = useState('');
 
-  const categories = [
+ /* const categories = [
     { name: 'Electronics', count: '2,543 products' },
     { name: 'Fashion', count: '5,891 products' },
     { name: 'Home & Garden', count: '3,214 products' },
@@ -13,79 +23,150 @@ function Home() {
     { name: 'Food & Beverages', count: '1,234 products' },
     { name: 'Books & Media', count: '4,156 products' }
   ];
+*/
+
+
+useEffect(() => {
+   fetchClientsDetails();
+},[]);
+
+const fetchClientsDetails = async () => {
+      try{
+           const response = await fetch(`http://localhost:5000/api/sellers`);
+            if(response.ok){
+               const data = await response.json();
+               setClients(data.sellers);
+               setMsg("Clients details fetched successfully");
+            }
+            else{
+                setMsg("Failed to fetch clients details.");
+            }
+      }catch(error){
+        console.error('Error fetching clients details:', error);
+        setMsg("Failed to fetch clients details. Please try again later.");
+      }
+};
+
+
+
 
   return (
     <div className="home-container">
+     
       {/* Navbar */}
-      <nav className="navbar">
-        <div className="nav-content">
-          <div className="logo">OrderPlace</div>
-          <div className="search-bar">
-            <input type="text" placeholder="Search products, sellers..." />
-            <button onClick={()=> navigate('/products')}>Search</button>
-          </div>
-          <div className="nav-links">
-            <button className="seller-login-navbar-btn" onClick={() => window.location.href='/seller-signin'}>Seller Login</button>
-          </div>
-        </div>
-      </nav>
+<nav className="navbar">
+  <div className="nav-content">
 
+    <div className="logo">Order<span style={{color: '#2e7d32'}}>Place</span>.org</div>
+
+    <div className="search-bar">
+      <input type="text" placeholder="Search products, sellers..." />
+      <button>Search</button>
+    </div>
+
+    <div className="nav-links">
+      <button className="seller-login-navbar-btn" onClick={()=> navigate('/seller-signIn')}>Sign In</button>
+    </div>
+
+  </div>
+</nav>
       {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content">
-          <h1>Discover Quality Products from Trusted Sellers</h1>
-          <p>Shop from thousands of verified sellers. Buy with confidence, sell with ease.</p>
-          <div className="hero-buttons">
-            <Link to="/products" style={{fontSize:"12px"}} className="btn btn-primary hero-btn">Shop Now</Link>
-            <Link to="/seller-signup" style={{fontSize:"12px",color:"black"}} className="btn hero-btn btn-outline">Become a Seller</Link>
-          </div>
-        </div>
-      </section>
+<section className="hp-hero">
 
-      {/* Categories */}
-      <section className="categories">
-        <h2>Shop by Category</h2>
-        <div className="categories-grid">
-          {categories.map((cat, idx) => (
-            <div key={idx} className="category-card">
-              <h3>{cat.name}</h3>
-             
+  <div className="hp-hero-left">
+
+    <span className="hp-hero-tag">
+      Platform for Online Sellers
+    </span>
+
+    <h1 className="hp-hero-title">
+      Create your Online Store.<br />
+      Upload. Share. <span>Sell.</span>
+    </h1>
+
+    <div className="hp-hero-buttons">
+      <button className="hp-primary-btn" onClick={()=>window.location.href='/seller-signUp'}>
+        Start Your Store →
+      </button>
+    </div>
+
+    <div className="hp-hero-features">
+      <div><img src={InstantStoreIcon} alt='instantStoreIcon' /> No Coding</div>
+      <div><img src={NoCodeIcon} alt='noCodeIcon' /> No Coding</div>
+      <div><img src={SecureIcon} alt='secureIcon' /> Secure & Reliable</div>
+    </div>
+
+  </div>
+
+  <div className="hp-hero-right">
+    <img src={HeroImg} alt="Store Preview" />
+  </div>
+
+</section>
+
+<section className="clients-section">
+
+  <h2 className='clients-title'>Our <span>Clients</span></h2>
+ <p className="clients-sub">Trusted by amazing sellers across India.</p>
+  <div className="clients-grid">
+
+      {clients && clients.length > 0 ? (
+        clients.map((client) => (
+          <div className='client-card' key={client._id}>
+            <div className="client-header">
+              <img src={BAG} alt="bag" />
+              <h4>{client.storeName}</h4>
             </div>
-          ))}
-        </div>
-      </section>
+
+         <img src={client.storeImg} alt={client.storeName} className='client-preview' />
+         <button className="client-url" onClick={()=>window.location.href=`http://localhost:3000/${client.storeSlug}/`}>
+           {client.storeSlug}
+         </button>
+     </div>
+        ))
+      ) : (
+        <p>No clients found.</p>
+     )}
+
+
+
+  </div>
+</section>
+
 
       {/* How It Works */}
-      <section className="how-it-works">
-        <h2>How It Works</h2>
-        <div className="steps">
-          <div className="step">
-            <div className="step-number">1</div>
-            <h3>Browse Products</h3>
-            <p>Explore thousands of products from verified sellers across all categories.</p>
-          </div>
-          <div className="step">
-            <div className="step-number">2</div>
-            <h3>Place Order</h3>
-            <p>Add items to cart and checkout securely. Multiple payment options available.</p>
-          </div>
-          <div className="step">
-            <div className="step-number">3</div>
-            <h3>Fast Delivery</h3>
-            <p>Sellers ship your order quickly. Track your package in real-time.</p>
-          </div>
-          <div className="step">
-            <div className="step-number">4</div>
-            <h3>Rate & Review</h3>
-            <p>Share your experience with products and sellers. Help the community.</p>
-          </div>
-        </div>
-      </section>
+<section className="how-it-works">
 
+  <h2>How It Works</h2>
+  <p>Start your online business in 3 simple steps.</p>
+
+  <div className="steps">
+
+    <div className="step">
+      <div className="step-number">1</div>
+      <h3>Upload Product Details</h3>
+      <p>Add your products with image, price, description.</p>
+    </div>
+
+    <div className="step">
+      <div className="step-number">2</div>
+      <h3>Get Your Store Link</h3>
+      <p>Your unique online store URL is generated instantly.</p>
+    </div>
+
+    <div className="step">
+      <div className="step-number">3</div>
+      <h3>Start Selling</h3>
+      <p>Share your link and start receiving orders.</p>
+    </div>
+
+  </div>
+
+</section>
       {/* For Sellers */}
       <section className="for-sellers">
         <div className="sellers-content">
-          <h2>Start Selling on BlackCart</h2>
+          <h2>Start Selling on OrderPlace</h2>
           <p>Join thousands of successful sellers. Reach millions of customers worldwide.</p>
           <div className="seller-benefits">
             <div className="benefit" style={{color:'black'}}>
@@ -133,56 +214,51 @@ function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="final-cta">
-        <h2>Start Shopping Today</h2>
-        <p>Discover amazing products from sellers you can trust</p>
-      <button className="btn btn-primary btn-large"> <Link to="/products" >Browse Products</Link></button>
-      </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h4>Company</h4>
-            <ul>
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#careers">Careers</a></li>
-              <li><a href="#blog">Blog</a></li>
-              <li><a href="#press">Press</a></li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h4>For Buyers</h4>
-            <ul>
-              <li><a href="#browse">Browse Products</a></li>
-              <li><a href="#orders">Track Orders</a></li>
-              <li><a href="#returns">Returns</a></li>
-              <li><a href="#help">Help Center</a></li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h4>For Sellers</h4>
-            <ul>
-              <li><a href="#sell">Start Selling</a></li>
-              <li><a href="#pricing">Pricing</a></li>
-              <li><a href="#seller-hub">Seller Hub</a></li>
-              <li><a href="#tools">Tools & Resources</a></li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h4>Legal</h4>
-            <ul>
-              <li><a href="#privacy">Privacy Policy</a></li>
-              <li><a href="#terms">Terms of Service</a></li>
-              <li><a href="#cookies">Cookie Policy</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>&copy; 2026 MarketPlace. All rights reserved. | Connecting buyers and sellers worldwide</p>
-        </div>
-      </footer>
+<footer className="footer">
+
+  <div className="footer-content">
+
+    {/* BRAND */}
+    <div className="footer-section">
+      <h3 className="footer-logo">OrderPlace</h3>
+      <p className="footer-desc">
+        Build your online store in minutes. Upload products, get your store link, and start selling instantly.
+      </p>
+    </div>
+
+    {/* CONTACT */}
+    <div className="footer-section">
+      <h4>Contact</h4>
+      <ul>
+        <li>Email: adityakr8816616@gmail.com</li>
+        <li>Phone: +91 96080 45844</li>
+        <li>India</li>
+      </ul>
+    </div>
+
+    {/* QUICK LINKS */}
+
+    {/* SOCIAL */}
+    <div className="footer-section">
+      <h4>Follow Us</h4>
+      <ul>
+        <li>
+          <a href="https://instagram.com/orderplace_org" target="_blank" rel="noreferrer">
+            Instagram
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div className="footer-bottom">
+    <p>© 2026 OrderPlace. All rights reserved.</p>
+  </div>
+
+</footer>
     </div>
   );
 }
