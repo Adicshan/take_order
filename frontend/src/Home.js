@@ -119,7 +119,7 @@ const fetchClientsDetails = async () => {
             </div>
 
          <img src={client.storeImg} alt={client.storeName} className='client-preview' />
-         <button className="client-url" onClick={()=>window.location.href=`https://orderplace.org//${client.storeSlug}/`}>
+         <button className="client-url" onClick={()=>window.location.href=`https://orderplace.org/${client.storeSlug}/`}>
            {client.storeSlug}
          </button>
      </div>
