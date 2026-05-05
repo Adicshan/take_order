@@ -4,14 +4,14 @@ const Seller = require('../models/Seller');
 
 // Get all sellers
 router.get('/', async (req, res) => {
-
+  console.log("🔥 API HIT /api/sellers");
   try {
     const sellers = await Seller.find({ isVerified: true }).select('-password -bankAccount -taxId -idDocument');
     
-
+    console.log("Fetched sellers:", sellers);
     res.status(200).json({ sellers });
   } catch (error) {
-
+    console.error('Error fetching sellers:', error);
     res.status(500).json({ error: error.message });
   }
 });
