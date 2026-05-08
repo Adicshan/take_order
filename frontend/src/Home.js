@@ -14,18 +14,6 @@ function Home() {
   const navigate = useNavigate();
   const [clients,setClients] = useState([]);
   const [msg,setMsg] = useState('');
-
- /* const categories = [
-    { name: 'Electronics', count: '2,543 products' },
-    { name: 'Fashion', count: '5,891 products' },
-    { name: 'Home & Garden', count: '3,214 products' },
-    { name: 'Sports & Outdoors', count: '1,876 products' },
-    { name: 'Food & Beverages', count: '1,234 products' },
-    { name: 'Books & Media', count: '4,156 products' }
-  ];
-*/
-
-
 useEffect(() => {
    fetchClientsDetails();
 },[]);
@@ -85,7 +73,8 @@ const fetchClientsDetails = async () => {
     </h1>
 
     <div className="hp-hero-buttons">
-      <button className="hp-primary-btn" onClick={()=>window.location.href='/seller-signUp'}>
+      <button className="hp-primary-btn" onClick={()=> window.open("https://wa.me/919608045844?text=I%20want%20Online%20Store",
+      "_blank")}>
         Start Your Store →
       </button>
     </div>
