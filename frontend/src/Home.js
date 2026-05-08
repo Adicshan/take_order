@@ -91,7 +91,7 @@ const fetchClientsDetails = async () => {
     </div>
 
     <div className="hp-hero-features">
-      <div><img src={InstantStoreIcon} alt='instantStoreIcon' /> No Coding</div>
+      <div><img src={InstantStoreIcon} alt='instantStoreIcon' /> Instant Store</div>
       <div><img src={NoCodeIcon} alt='noCodeIcon' /> No Coding</div>
       <div><img src={SecureIcon} alt='secureIcon' /> Secure & Reliable</div>
     </div>
