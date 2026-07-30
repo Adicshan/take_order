@@ -2,38 +2,186 @@ import './Home.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from './config';
-import HeroImg from './header_images/heroImg.png';
-import BAG from './header_images/bag.png';
+import { WEB_URL} from './config';
+import HeroImg from './header_images/Product-page.png';
 import InstantStoreIcon from './header_images/instatStore.png';
 import NoCodeIcon from './header_images/noCoding.png';
 import SecureIcon from './header_images/Secure.png';
 import { useState, useEffect } from 'react';
+import HIW from "./header_images/Hiw.png";
+import slugify from 'slugify';
+import {
+  FiUpload,
+  FiTag,
+  FiFileText,
+  FiDollarSign,
+  FiUser,
+  FiLink2,
+  FiCopy,
+  FiSmartphone
+} from "react-icons/fi";
 
 
 function Home() {
   const navigate = useNavigate();
   const [clients,setClients] = useState([]);
   const [msg,setMsg] = useState('');
-useEffect(() => {
-   fetchClientsDetails();
-},[]);
 
-const fetchClientsDetails = async () => {
-      try{
-           const response = await fetch(`https://take-order.onrender.com/api/sellers`);
-            if(response.ok){
-               const data = await response.json();
-               setClients(data.sellers);
-               setMsg("Clients details fetched successfully");
+  const [link,setLink]=useState('');
+  const [image,setImage] = useState(null);
+    const [productData, setProductData] = useState({
+      name: '',
+      description: '',
+      price: '',
+      quantity: 1,
+      category: 'Other',
+      size: 'No',
+      imageFile: null,
+      imagePreview: null
+    });
+  const [sellerData, setSellerData] = useState({
+      // Step 1 - Personal Info
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      phone: '',
+      // Step 2 - Business Info
+      storeName: '',
+      businessType: 'individual',
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: 'USA',
+      // Step 3 - Verification
+      taxId: '',
+      bankAccount: '',
+      idDocument: null
+    });
+
+    const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(e.target.files[0]));
+      setProductData(prev => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file)
+      }));
+    }
+  };
+
+
+
+    const handleSellerInputChange = (e) => {
+    const { name, value } = e.target;
+    setSellerData(prev => ({ ...prev, [name]: value }));
+    
+  };
+
+      const handleProductInputChange = (e) => {
+    const { name, value } = e.target;
+    setProductData(prev => ({ ...prev, [name]: value }));
+    
+  };
+
+const handleGenerateLink = async () => {
+    //  e.preventDefault();
+    
+        console.log("Inside Add Seller");
+        console.log("STORENAME:", sellerData.storeName);
+        let sellerId = '';
+        let storeSlug = '';
+        let productId = '';
+        try {
+          const payload = {
+            fullName: sellerData.storeName,
+            email: sellerData.storeName,
+            password: "12345678",
+            phone: sellerData.phone,
+            storeName: sellerData.storeName,
+            storeSlug: slugify(sellerData.storeName || '', { lower: true, strict: true }),
+            businessType: 'small_business',
+            address: {
+              street: sellerData.storeName,
+              city:sellerData.storeName,
+              state: sellerData.storeName,
+              zipCode: sellerData.storeName,
+              country: sellerData.storeName
+            },
+            taxId: sellerData.storeName,
+            bankAccount: sellerData.storeName
+          };
+
+          console.log("Payload:", payload);
+    
+          const response = await fetch(`${API_URL}/seller-auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+    
+          const data = await response.json();
+          console.log(data.seller._id);
+          console.log("StoreSlug:",data.seller.storeSlug);
+          sellerId = data.seller._id;
+          storeSlug= data.seller.storeSlug;
+    
+          if (response.ok) {
+            localStorage.setItem('sellerToken', data.token);
+            console.log("Seller has added.");
+          } else {
+            console.log("Seller has not added.");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+
+        // product data save 
+
+
+            try {
+              const formData = new FormData();
+              formData.append('name', productData.name);
+              formData.append('description', productData.description);
+              formData.append('price', productData.price);
+              formData.append('quantity', productData.quantity);
+              formData.append('category', productData.category);
+              formData.append('size', productData.size);
+              if (productData.imageFile) {
+                formData.append('image', productData.imageFile);
+              }
+              // Attach seller ID to product creation
+              if (sellerId) {
+                console.log("Seller id:",sellerId);
+                formData.append('sellerId', sellerId);
+              }
+              const response = await fetch(`${API_URL}/products/createProduct`, {
+                method: 'POST',
+                body: formData
+              });
+              const data = await response.json();
+              console.log("Product ID:",data.productId);
+              productId = data.productId;
+              if (response.ok) {
+                console.log("Product added successfully.");
+
+
+              } else {
+                console.log("fail to add product");
+              }
+            } catch (error) {
+              console.error('Error adding product:', error);
+
             }
-            else{
-                setMsg("Failed to fetch clients details.");
-            }
-      }catch(error){
-        console.error('Error fetching clients details:', error);
-        setMsg("Failed to fetch clients details. Please try again later.");
-      }
-};
+
+
+
+            setLink(`${WEB_URL}/${storeSlug}/view/${productId}`);
+  }
+
+
 
 
 
@@ -46,12 +194,12 @@ const fetchClientsDetails = async () => {
   <div className="nav-content">
 
     <div className="logo">Order<span style={{color: '#2e7d32'}}>Place</span>.org</div>
-
+{/*}
     <div className="search-bar">
       <input type="text" placeholder="Search products, sellers..." />
       <button>Search</button>
     </div>
-
+*/}
     <div className="nav-links">
       <button className="seller-login-navbar-btn" onClick={()=> navigate('/seller-signIn')}>Sign In</button>
     </div>
@@ -62,22 +210,164 @@ const fetchClientsDetails = async () => {
 <section className="hp-hero">
 
   <div className="hp-hero-left">
-
+{/*}
     <span className="hp-hero-tag">
-      Platform for Online Sellers
+      Perfect for Instagram & WhatsApp Sellers
     </span>
-
+*/}
     <h1 className="hp-hero-title">
-      Create your Online Store.<br />
-      Upload. Share. <span>Sell.</span>
+      Get Your Product Link<br />
+      in <span>30 Seconds</span>
     </h1>
 
-    <div className="hp-hero-buttons">
-      <button className="hp-primary-btn" onClick={()=> window.open("https://wa.me/919608045844?text=I%20want%20Online%20Store",
-      "_blank")}>
-        Start Your Store →
-      </button>
+
+
+<div className="product-form">
+
+  {/* Upload Card */}
+
+  <label className="upload-box">
+
+   {/*} {image ? (*/}
+      <div className="preview-wrapper">
+
+        {image ? (
+    <img
+      src={image}
+      alt="Product"
+      className="preview-image"
+    />
+  ) : (
+    <div className="preview-placeholder">
+      <FiUpload className="preview-upload-icon" />
     </div>
+  )}
+
+        <div className="preview-info">
+          <p>Upload Product Image</p>
+          
+        </div>
+
+      </div>
+  
+
+    <input
+      type="file"
+      name="image"
+      accept="image/*"
+      onChange={handleImage}
+    />
+
+  </label>
+
+  {/* Form */}
+
+ {/*} {image && */}
+
+    <div className="form-fields">
+
+      <div className="input-group">
+        <FiTag className="input-icon" />
+
+        <input
+          type="text"
+          name="name"
+          value={productData.name}
+          onChange={handleProductInputChange}
+          placeholder="Product Name"
+        />
+      </div>
+
+      <div className="input-group textarea-group">
+        <FiFileText className="input-icon" />
+
+        <textarea
+          rows={4}
+          name="description"
+          value={productData.description}
+          onChange={handleProductInputChange}
+          placeholder="Product Description"
+        />
+      </div>
+
+      <div className="double-input">
+
+        <div className="input-group">
+          <FiDollarSign className="input-icon" />
+
+          <input
+            type="number"
+            name="price"
+            value={productData.price}
+            onChange={handleProductInputChange}
+            placeholder="Price"
+          />
+        </div>
+
+        <div className="input-group">
+          <FiUser className="input-icon" />
+
+          <input
+            type="text"
+            name="storeName"
+            value={sellerData.storeName}
+            onChange={handleSellerInputChange}
+            placeholder="Seller Name"
+          />
+        </div>
+
+
+        <div className="input-group">
+  <FiSmartphone className="input-icon" />
+
+  <input
+    type="tel"
+    name="phone"
+    value={sellerData.phone}
+    onChange={handleSellerInputChange}
+    placeholder="UPI / PhonePe / GPay / Paytm Number"
+  />
+</div>
+
+      </div>
+
+      <button
+        className="generate-btn"
+        onClick={handleGenerateLink}
+      >
+        <FiLink2 />
+
+        <span>Generate Product Link</span>
+
+      </button>
+
+      {link && (
+
+        <div className="generated-link">
+
+          <input
+            type="text"
+            value={link}
+            readOnly
+          />
+
+          <button
+            className="copy-btn"
+            onClick={() => navigator.clipboard.writeText(link)}
+          >
+            <FiCopy />
+          </button>
+
+        </div>
+
+      )}
+
+    </div>
+
+  {/*})}*/}
+
+</div>
+
 
     <div className="hp-hero-features">
       <div><img src={InstantStoreIcon} alt='instantStoreIcon' /> Instant Store</div>
@@ -89,10 +379,12 @@ const fetchClientsDetails = async () => {
 
   <div className="hp-hero-right">
     <img src={HeroImg} alt="Store Preview" />
+    <img src={HIW} alt="How It Works" className="hiw-image" />
   </div>
 
 </section>
 
+{/*}
 <section className="clients-section">
 
   <h2 className='clients-title'>Our <span>Clients</span></h2>
@@ -121,7 +413,7 @@ const fetchClientsDetails = async () => {
 
   </div>
 </section>
-
+*/}
 
       {/* How It Works */}
 <section className="how-it-works">
@@ -139,14 +431,14 @@ const fetchClientsDetails = async () => {
 
     <div className="step">
       <div className="step-number">2</div>
-      <h3>Get Your Store Link</h3>
-      <p>Your unique online store URL is generated instantly.</p>
+      <h3>Add Payment Details</h3>
+      <p>Enter your UPI ID, Phone number to receive payments.</p>
     </div>
 
     <div className="step">
       <div className="step-number">3</div>
-      <h3>Start Selling</h3>
-      <p>Share your link and start receiving orders.</p>
+      <h3>Get Your Product Link</h3>
+      <p>Get your product link instantly and start selling.</p>
     </div>
 
   </div>
