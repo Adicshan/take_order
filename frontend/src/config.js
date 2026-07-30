@@ -3,5 +3,6 @@
 const IS_LOCAL = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || (IS_LOCAL ? 'http://localhost:5000' : 'https://take-order.onrender.com');
 const API_URL = `${API_BASE_URL}/api`;
+const WEB_URL = (IS_LOCAL ? 'http://localhost:3000' : 'https://orderplace.org');
 
-export { API_BASE_URL, API_URL };
+export { API_BASE_URL, API_URL, WEB_URL };

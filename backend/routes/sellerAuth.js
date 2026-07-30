@@ -92,15 +92,26 @@ router.post('/register', async (req, res) => {
       idDocument
     } = req.body;
 
+
+     
     // Validation
     if (!fullName || !email || !password || !phone || !storeName || !businessType || !taxId || !bankAccount) {
+      console.log("Validation Failed");
       return res.status(400).json({ error: 'Please provide all required fields' });
     }
-
+ 
     // Check if seller already exists
     const existingSeller = await Seller.findOne({ email });
     if (existingSeller) {
-      return res.status(400).json({ error: 'Email already registered' });
+      console.log("Email already registered");
+      const token = generateToken(existingSeller._id);
+      return res.status(200).json({
+         success: true,
+         message: "seller already exist",
+         token,
+         seller:existingSeller.toJSON(),
+         existing: true
+      });
     }
 
     // Create new seller (ensure storeSlug generated)

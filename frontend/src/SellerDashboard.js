@@ -392,7 +392,7 @@ const SellerDashboard = () => {
                     </div>
                     
                     <div className="form-group">
-                      <label>Size*</label>
+                      <label>Size</label>
                       <select name="size" value={productFormData.size} onChange={handleInputChange} required>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>

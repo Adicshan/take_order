@@ -125,15 +125,16 @@
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:50px;
-  padding:30px 80px;
-  background:#f8fafc;
+  gap:1px;
+  padding:30px 50px;
+  background:#f8fafc;/*#f8fafc*/
 }
 
 /* LEFT */
 .hp-hero-left{
   flex:1;
   max-width:540px;
+  margin-top: -20px;
 }
 
 /* TAG */
@@ -168,23 +169,607 @@
   line-height:1.6;
 }
 
+.hp-upload-card {
+    width: 120px;
+    height: 90px;
+    border: 2px dashed #d8e6d8;
+    border-radius: 18px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.hp-upload-card:hover {
+    transform: translateY(-5px);
+    border-color: #16a34a;
+    box-shadow: 0 18px 40px rgba(22,163,74,0.18);
+}
+
+.hp-upload-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    background: #f7f8fa;
+    color: #16a34a;
+    font-size: 42px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .3s;
+    
+}
+
+.hp-upload-card:hover .hp-upload-icon {
+    background: #16a34a;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+.hp-upload-card h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    text-align: center;
+}
+
+.hp-upload-card p {
+    margin: 0;
+    font-size: 15px;
+    color: #6b7280;
+    text-align: center;
+}
+
+
+
+
+
 /* BUTTON */
 .hp-primary-btn{
-  background:#000;
-  color:#fff;
-  padding:12px 24px;
-  border:none;
+  background:#f7f8fa;
+  color:#000;
+  padding:18px 24px;
+  border:1px solid #16a34a;
   border-radius:8px;
   cursor:pointer;
   font-size:14px;
   transition:0.2s ease;
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .hp-primary-btn:hover{
-  background:#222;
+  border:2px solid #16a34a;
 }
 
+
+/* =================================
+   PRODUCT FORM
+================================= */
+
+.product-form{
+    width:100%;
+    max-width:400px;
+    margin:0 auto;
+    background:#fff;
+    border-radius:24px;
+    padding:20px;
+    box-shadow:0 12px 35px rgba(0,0,0,.08);
+    margin-top: 20px;
+}
+
+/* =================================
+   Upload Box
+================================= */
+
+.upload-box{
+    display:block;
+    cursor:pointer;
+    
+}
+
+.upload-box input{
+    display:none;
+}
+
+/* =================================
+   Upload Placeholder
+================================= */
+
+.upload-box:not(:has(.preview-wrapper)){
+
+    border:2px dashed #86efac;
+    border-radius:18px;
+    padding:22px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+
+    transition:.3s;
+}
+
+.upload-box:not(:has(.preview-wrapper)):hover{
+
+    border-color:#16a34a;
+    background:#fbfffc;
+
+}
+
+/* =================================
+   Upload Icon
+================================= */
+
+.preview-upload-icon{
+
+    width:20px;
+    height:20px;
+    background:white;
+    color:#16a34a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    margin-bottom:1px;
+
+}
+
+/* =================================
+   Upload Text
+================================= */
+
+.upload-box h3{
+
+    margin:0;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#111827;
+
+    line-height:1.3;
+
+}
+
+.upload-box p{
+
+    margin-top:6px;
+
+    font-size:14px;
+
+    color:#6B7280;
+
+}
+
+/* =================================
+   Preview
+================================= */
+
+.preview-wrapper{
+
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    border:2px dashed #86efac;
+
+    border-radius:16px;
+
+    padding:14px 18px;
+
+    background:#fff;
+
+    transition:.3s;
+
+}
+
+.preview-wrapper:hover{
+
+    border-color:#16a34a;
+
+}
+
+.preview-image{
+
+    width:56px;
+    height:56px;
+
+    border-radius:10px;
+
+    object-fit:cover;
+
+}
+
+.preview-info{
+
+    flex:1;
+
+}
+
+.preview-info h4{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#111827;
+
+}
+
+.preview-info p{
+
+    margin-top:4px;
+
+    font-size:20px;
+
+    color:#6B7280;
+
+}
+
+.preview-wrapper::after{
+
+    content:"›";
+
+    font-size:28px;
+
+    color:#6B7280;
+
+}
+
+/* =================================
+   Form
+================================= */
+
+.form-fields{
+
+    margin-top:18px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+/* =================================
+   Inputs
+================================= */
+
+.input-group{
+
+    position:relative;
+
+}
+
+.input-icon{
+
+    position:absolute;
+
+    left:16px;
+
+    top:15px;
+
+    font-size:18px;
+
+    color:#16a34a;
+
+}
+
+.input-group input,
+.input-group textarea{
+
+    width:100%;
+
+    padding:14px 16px 14px 48px;
+
+    border:1px solid #E5E7EB;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.25s;
+
+}
+
+.input-group textarea{
+
+    resize:none;
+
+    min-height:90px;
+
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder{
+
+    color:#9CA3AF;
+
+}
+
+.input-group input:focus,
+.input-group textarea:focus{
+
+    border-color:#16a34a;
+
+    box-shadow:0 0 0 3px rgba(22,163,74,.12);
+
+}
+
+/* =================================
+   Double Input
+================================= */
+
+.double-input{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:14px;
+
+}
+
+/* =================================
+   Button
+================================= */
+
+.generate-btn{
+
+    height:50px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#16a34a;
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.generate-btn:hover{
+
+    background:#15803d;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 25px rgba(22,163,74,.25);
+
+}
+
+/* =================================
+   Generated Link
+================================= */
+
+.generated-link{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-top:8px;
+
+}
+
+.generated-link input{
+
+    flex:1;
+
+    padding:12px;
+
+    border:1px solid #BBF7D0;
+
+    border-radius:12px;
+
+    background:#ECFDF3;
+
+    color:#166534;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    outline:none;
+
+}
+
+.copy-btn{
+
+    width:46px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#ECFDF3;
+
+    color:#16a34a;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.25s;
+
+}
+
+.copy-btn:hover{
+
+    background:#16a34a;
+
+    color:white;
+
+}
+
+/* =================================
+   Mobile
+================================= */
+
+@media (max-width:768px){
+
+.product-form{
+
+    width:94%;
+    max-width:340px;
+
+    padding:16px;
+
+    border-radius:20px;
+
+}
+
+.upload-box:not(:has(.preview-wrapper)){
+
+    padding:18px;
+
+}
+
+.upload-icon{
+
+    width:50px;
+    height:50px;
+
+    font-size:24px;
+
+    border-radius:14px;
+
+    margin-bottom:10px;
+
+}
+
+.upload-box h3{
+
+    font-size:19px;
+
+}
+
+.upload-box p{
+
+    font-size:13px;
+
+}
+
+.preview-wrapper{
+
+    padding:12px 14px;
+
+    gap:10px;
+
+}
+
+.preview-image{
+
+    width:50px;
+    height:50px;
+
+}
+
+.preview-info h4{
+
+    font-size:16px;
+
+}
+
+.preview-info p{
+
+    font-size:12px;
+
+}
+
+.input-group input,
+.input-group textarea{
+
+    padding:12px 14px 12px 42px;
+
+    font-size:14px;
+
+}
+
+.input-icon{
+
+    left:14px;
+
+    top:13px;
+
+    font-size:16px;
+
+}
+
+.double-input{
+
+    grid-template-columns:1fr;
+
+    gap:12px;
+
+}
+
+.generate-btn{
+
+    height:46px;
+
+    font-size:15px;
+
+}
+
+.generated-link{
+
+    flex-direction:column;
+
+}
+
+.copy-btn{
+
+    width:100%;
+    height:46px;
+
+}
+
+}
+
+
+@media(max-width:768px){
+
+.hiw-image{
+  display:none;
+}
+}
 /* FEATURES */
 .hp-hero-features{
   display:flex;
@@ -215,12 +800,12 @@
 .hp-hero-right{
   flex:1;
   display:flex;
-  justify-content:flex-end;
+  justify-content:flex-start;
 }
 
 .hp-hero-right img{
   width:100%;
-  max-width:540px;
+  max-width:300px;
   object-fit:contain;
 }
 
@@ -237,7 +822,7 @@
 
 /* TITLE */
 .hp-hero-title{
-  font-size:26px;
+  font-size:20px;
 }
 
 /* DESC */
@@ -269,7 +854,7 @@
 
 .hp-hero-right img{
   max-width:300px;
-  margin-top:10px;
+  margin-top:-10px;
 }
 
 }

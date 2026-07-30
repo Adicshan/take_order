@@ -75,7 +75,7 @@ const Product = ({ product, showBuy = true }) => {
 
   // ── Render ────────────────────────────────────────────────────
   return (
-  <Link to={productDetailLink} className="product-card">
+  <Link to={productDetailLink} className="product-card" >
 
   {/* Discount Badge */}
   {discountPct > 0 && (

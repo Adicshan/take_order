@@ -94,6 +94,53 @@ router.post('/create', verifySeller, upload.single('image'), async (req, res) =>
   }
 });
 
+
+
+// only for creating product Home page
+router.post('/createProduct', upload.single('image'), async (req, res) => {
+  try {
+    const { name, description, price, quantity, category,size,sellerId } = req.body;
+
+    if (!name || !description || !price || !quantity || !category || !size) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
+    console.log(sellerId);
+    const product = new Product({
+      sellerId: sellerId,
+      name,
+      description,
+      price: parseFloat(price),
+      quantity: parseInt(quantity),
+      category,
+      size,
+      imageUrl: imageUrl,
+      status: 'active'
+    });
+
+    const savedProduct = await product.save();
+    res.status(201).json({ 
+      success: true,
+      message: 'Product created successfully',
+      productId: savedProduct._id,
+      product:savedProduct
+    });
+  } catch (error) {
+    if (req.file) {
+      fs.unlinkSync(req.file.path);
+    }
+    console.error('Error creating product:', error);
+    res.status(500).json({ message: 'Error creating product', error: error.message });
+  }
+});
+
 // Get seller's products
 router.get('/seller-products', verifySeller, async (req, res) => {
   try {
